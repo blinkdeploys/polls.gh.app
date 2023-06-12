@@ -9,6 +9,7 @@ import {
 const Home = () => {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('')
+    const [mode, setMode] = useState('')
 
     return (
         <SafeAreaView
@@ -43,8 +44,19 @@ const Home = () => {
                             }
                         }}
                     />
-                    <ResultSheet />
-                    <AgentActions />
+                    {(mode === 'presidential_sheet')
+                        ? <ResultSheet
+                            title="Presidential Results"
+                            mode={mode}
+                            goHome={() => setMode('')} />
+                        : <></>}
+                    {(mode === 'parliamentary_sheet')
+                        ? <ResultSheet
+                            title="Parliamentary Results"
+                            mode={mode}
+                            goHome={() => setMode('')} />
+                        : <></>}
+                    {(mode === '') ? <AgentActions selectMode={setMode} /> : <></>}
                 </View>
             </ScrollView>
         </SafeAreaView>
