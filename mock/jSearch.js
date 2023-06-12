@@ -9,37 +9,287 @@ const navigation = {
     },
     "data": [
       {
-        "job_id": "hO4waEcPOOsAAAAAAAAAAA==",
+        "id": "hO4waEApOOsAAAAAAAAAAA==",
         "station": "ACTION CHURCH AIYINASE",
         "constituency": "ELLEMBELE Constituency",
         "region": "WESTERN Region",
-        "job_employment_type": "FULLTIME",
-        "job_title": "Enter Polling Station Results",
-        "path": "sheet",
+        "detail": "Enter Polling Station Results",
+        "title": "Presidential Polls",
+        "path": "presidential_sheet",
       },
       {
-        "job_publisher": "LinkedIn",
-        "job_id": "coYJOHUuKwQAAAAAAAAAAA==",
-        "job_employment_type": "0 / 14 Parties in Polling Station",
-        "job_title": "Upload EC Summary Sheet (Polling Station)",
+        "id": "hO4waEXPOOsAAAAAAAAAAA==",
+        "station": "ACTION CHURCH AIYINASE",
+        "constituency": "ELLEMBELE Constituency",
+        "region": "WESTERN Region",
+        "detail": "Enter Polling Station Results",
+        "title": "Parliamentary Polls",
+        "path": "parliamentary_sheet",
+      },
+      {
+        "id": "coYJOHUuKwQAAAAAAAAAAA==",
+        "detail": "0 / 14 Parties in Polling Station",
+        "title": "Upload EC Summary Sheet (Polling Station)",
         "path": "file",
       },
       {
-        "job_id": "Z5O-WYY9YPkAAAAAAAAAAA==",
-        "job_employment_type": "No results approved yet.",
-        "job_title": "Approve Entered Results",
+        "id": "Z5O-WYY9YPkAAAAAAAAAAA==",
+        "detail": "No results approved yet.",
+        "title": "Approve Entered Results",
         "path": "approve",
       },
       {
-        "job_id": "kXc3RgeQqSEAAAAAAAAAAA==",
-        "job_employment_type": "Ends session",
-        "job_title": "Logout",
+        "if": "kXc3RgeQqSEAAAAAAAAAAA==",
+        "detail": "Ends session",
+        "title": "Logout",
         "path": "logout",
       },
     ]
   }
 }
 
+const mockPresidentialResultSheet = {
+  data: {
+    "status": "OK",
+    "request_id": "0343fd6a-cad9-4e12-9de1-feaae713d0ac",
+    "parameters": {
+      "job_id": "hO4waEcPOOsAAAAAAAAAAA==",
+      "extended_publisher_details": false
+    },
+    "station": {
+      "code": "A090783",
+      "title": "Action Church Aiyinase"
+    },
+    "data": [
+      {
+        "pk": 1,
+        "party__pk": 1,
+        "party__code": "NDC",
+        "party__title": "National Democratic Congress",
+        "total_votes": 45689
+      },
+      {
+        "pk": 2,
+        "party__pk": 2,
+        "party__code": "NPP",
+        "party__title": "New Patriotic Party",
+        "total_votes": 4583
+      },
+      {
+        "pk": 3,
+        "party__pk": 3,
+        "party__code": "GUM",
+        "party__title": "Ghana Union Movement",
+        "total_votes": 9695
+      },
+      {
+        "pk": 4,
+        "party__pk": 4,
+        "party__code": "APC",
+        "party__title": "All People's Congress",
+        "total_votes": 4583
+      },
+      {
+        "pk": 5,
+        "party__pk": 5,
+        "party__code": "PPP", 
+        "party__title": "Progressive People's Party",
+        "total_votes": 5849
+      },
+      {
+        "pk": 6,
+        "party__pk": 6,
+        "party__code": "GPP", 
+        "party__title": "Ghana Freedom Party",
+        "total_votes": 34594
+      },
+      {
+        "pk": 7,
+        "party__pk": 7,
+        "party__code": "NDP", 
+        "party__title": "National Democratic Party",
+        "total_votes": 245323
+      },
+      {
+        "pk": 8,
+        "party__pk": 8,
+        "party__code": "CPP", 
+        "party__title": "Convention People's Party",
+        "total_votes": 4069
+      },
+      {
+        "pk": 9,
+        "party__pk": 9,
+        "party__code": "GCPP", 
+        "party__title": "Great Consolidated Popular Party",
+        "total_votes": 59443
+      },
+      {
+        "pk": 10,
+        "party__pk": 10,
+        "party__code": "UFP",
+        "party__title": "United Front Party",
+        "total_votes": 45832
+      },
+      {
+        "pk": 11,
+        "party__pk": 11,
+        "party__code": "UPP", 
+        "party__title": "United Progressive Party",
+        "total_votes": 48593
+      },
+      {
+        "pk": 12,
+        "party__pk": 12,
+        "party__code": "PAP", 
+        "party__title": "People's Action Party",
+        "total_votes": 8493
+      },
+      {
+        "pk": 13,
+        "party__pk": 13,
+        "party__code": "LPG", 
+        "party__title": "Liberal Party of Ghana",
+        "total_votes": 34480
+      },
+      {
+        "pk": 14,
+        "party__pk": 14,
+        "party__code": "PNC", 
+        "party__title": "People's National Convention",
+        "total_votes": 485
+      },
+      {
+        "pk": 15,
+        "party__pk": 15,
+        "party__code": "IND", 
+        "party__title": "Independent",
+        "total_votes": 74382
+      }
+    ]
+  }
+}
+const mockParliamentaryResultSheet = {
+  data: {
+    "status": "OK",
+    "request_id": "0343fd6a-cad9-4e12-9de1-feaae713d0ac",
+    "parameters": {
+      "job_id": "hO4waEcPOOsAAAAAAAAAAA==",
+      "extended_publisher_details": false
+    },
+    "station": {
+      "code": "A090783",
+      "title": "Action Church Aiyinase"
+    },
+    "data": [
+      {
+        "pk": 1,
+        "party__pk": 1,
+        "party__code": "NDC",
+        "party__title": "National Democratic Congress",
+        "total_votes": 4555
+      },
+      {
+        "pk": 2,
+        "party__pk": 2,
+        "party__code": "NPP",
+        "party__title": "New Patriotic Party",
+        "total_votes": 68946
+      },
+      {
+        "pk": 3,
+        "party__pk": 3,
+        "party__code": "GUM",
+        "party__title": "Ghana Union Movement",
+        "total_votes": 9983
+      },
+      {
+        "pk": 4,
+        "party__pk": 4,
+        "party__code": "APC",
+        "party__title": "All People's Congress",
+        "total_votes": 8345
+      },
+      {
+        "pk": 5,
+        "party__pk": 5,
+        "party__code": "PPP", 
+        "party__title": "Progressive People's Party",
+        "total_votes": 85249
+      },
+      {
+        "pk": 6,
+        "party__pk": 6,
+        "party__code": "GPP", 
+        "party__title": "Ghana Freedom Party",
+        "total_votes": 343594
+      },
+      {
+        "pk": 7,
+        "party__pk": 7,
+        "party__code": "NDP", 
+        "party__title": "National Democratic Party",
+        "total_votes": 524433
+      },
+      {
+        "pk": 8,
+        "party__pk": 8,
+        "party__code": "CPP", 
+        "party__title": "Convention People's Party",
+        "total_votes": 44069
+      },
+      {
+        "pk": 9,
+        "party__pk": 9,
+        "party__code": "GCPP", 
+        "party__title": "Great Consolidated Popular Party",
+        "total_votes": 58933
+      },
+      {
+        "pk": 10,
+        "party__pk": 10,
+        "party__code": "UFP",
+        "party__title": "United Front Party",
+        "total_votes": 4852
+      },
+      {
+        "pk": 11,
+        "party__pk": 11,
+        "party__code": "UPP", 
+        "party__title": "United Progressive Party",
+        "total_votes": 4593
+      },
+      {
+        "pk": 12,
+        "party__pk": 12,
+        "party__code": "PAP", 
+        "party__title": "People's Action Party",
+        "total_votes": 84493
+      },
+      {
+        "pk": 13,
+        "party__pk": 13,
+        "party__code": "LPG", 
+        "party__title": "Liberal Party of Ghana",
+        "total_votes": 44880
+      },
+      {
+        "pk": 14,
+        "party__pk": 14,
+        "party__code": "PNC", 
+        "party__title": "People's National Convention",
+        "total_votes": 385
+      },
+      {
+        "pk": 15,
+        "party__pk": 15,
+        "party__code": "IND", 
+        "party__title": "Independent",
+        "total_votes": 742
+      }
+    ]
+  }
+}
 const mockResultSheet = {
   data: {
     "status": "OK",
@@ -644,5 +894,5 @@ const mockSearch = {
 }
 
 export {
-  navigation, mockResultSheet, mockSearch, mockJobDetails
+  navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockResultSheet, mockSearch, mockJobDetails
 }
