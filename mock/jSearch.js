@@ -16,6 +16,7 @@ const navigation = {
         "detail": "Enter Polling Station Results",
         "title": "Presidential Polls",
         "path": "presidential_sheet",
+        "required": true,
       },
       {
         "id": "hO4waEXPOOsAAAAAAAAAAA==",
@@ -25,24 +26,31 @@ const navigation = {
         "detail": "Enter Polling Station Results",
         "title": "Parliamentary Polls",
         "path": "parliamentary_sheet",
+        "required": true,
+        "done": false,
       },
       {
         "id": "coYJOHUuKwQAAAAAAAAAAA==",
         "detail": "0 / 14 Parties in Polling Station",
         "title": "Upload EC Summary Sheet (Polling Station)",
         "path": "file",
+        "required": true,
+        "done": false,
       },
       {
         "id": "Z5O-WYY9YPkAAAAAAAAAAA==",
         "detail": "No results approved yet.",
         "title": "Approve Entered Results",
         "path": "approve",
+        "required": true,
+        "done": true,
       },
       {
         "if": "kXc3RgeQqSEAAAAAAAAAAA==",
         "detail": "Ends session",
         "title": "Logout",
         "path": "logout",
+        "required": false,
       },
     ]
   }
