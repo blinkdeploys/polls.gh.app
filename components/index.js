@@ -2,7 +2,8 @@ import ScreenHeaderBtn from "./common/header/ScreenHeaderBtn";
 
 // home screen
 import Welcome from "./home/welcome/Welcome";
-import AgentActions from "./home/nearby/AgentActions";
+import AgentActions from "./home/action/AgentActions";
+import ResultSheet from "./home/action/ResultSheet";
 import Popularjobs from "./home/popular/Popularjobs";
 
 // job details screen
@@ -13,17 +14,20 @@ import { default as JobFooter } from "./jobdetails/footer/Footer";
 import Specifics from "./jobdetails/specifics/Specifics";
 
 // common
-import NearbyJobCard from "./common/cards/nearby/NearbyJobCard";
+import AgentActionCard from "./common/cards/action/AgentActionCard";
+import ResultSheetCard from "./common/cards/action/ResultSheetCard";
 
 export {
   ScreenHeaderBtn,
   Welcome,
   AgentActions,
+  AgentActionCard,
+  ResultSheet,
+  ResultSheetCard,
   Popularjobs,
   Company,
   JobTabs,
   JobAbout,
   JobFooter,
   Specifics,
-  NearbyJobCard
 };

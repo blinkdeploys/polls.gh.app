@@ -3,7 +3,7 @@ import { View, ScrollView, SafeAreaView, Text } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
 import { COLORS, SIZES, icons, images } from '../constants'
 import {
-    AgentActions, Popularjobs, ScreenHeaderBtn, Welcome
+    ResultSheet, AgentActions, Popularjobs, ScreenHeaderBtn, Welcome
 } from '../components'
 
 const Home = () => {
@@ -43,8 +43,8 @@ const Home = () => {
                             }
                         }}
                     />
+                    <ResultSheet />
                     <AgentActions />
-                    <Popularjobs/>
                 </View>
             </ScrollView>
         </SafeAreaView>
