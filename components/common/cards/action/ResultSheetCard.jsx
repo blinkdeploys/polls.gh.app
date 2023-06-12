@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { checkImageURL } from '../../../../utils'
 import { images } from '../../../../constants'
+import { AntDesign } from '@expo/vector-icons';
 
 import styles from './agentActionCard.style'
 
@@ -28,7 +29,10 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         <Text
           style={styles.jobName}
           numberOfLines={1}
-        >{job.total_votes > 0 ? job.total_votes : '+'}</Text>
+        >{job.total_votes > 0
+          ? job.total_votes
+          : <AntDesign name="plus" size={24} color="black" />}
+        </Text>
       </TouchableOpacity>
     </TouchableOpacity>
   )
