@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { checkImageURL } from '../../../../utils'
 import { images } from '../../../../constants'
 
-import styles from './nearbyjobcard.style'
+import styles from './agentActionCard.style'
 
 
-const NearbyJobCard = ({ job, handleNavigate }) => {
+const AgentActionCard = ({ job, handleNavigate }) => {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -31,11 +31,11 @@ const NearbyJobCard = ({ job, handleNavigate }) => {
         {(job?.station) ? <Text style={styles.jobType} >{job?.station}</Text> : null}
         {(job?.constituency) ? <Text style={styles.jobType} >{job?.constituency}</Text> : null}
         {(job?.region) ? <Text style={styles.jobType} >{job?.region}</Text> : null}
-        {(job?.job_employment_type === null) ? null : <Text style={styles.jobType} >{job?.job_employment_type}</Text>}
+        {(job?.job_employment_type) ? <Text style={styles.jobType} >{job?.job_employment_type}</Text> : null}
         
       </View>
     </TouchableOpacity>
   )
 }
 
-export default NearbyJobCard
+export default AgentActionCard

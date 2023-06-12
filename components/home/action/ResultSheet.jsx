@@ -4,19 +4,22 @@ import { useRouter } from 'expo-router'
 
 import styles from './agentActions.style'
 import { COLORS } from '../../../constants'
-import NearbyJobCard from '../../common/cards/nearby/NearbyJobCard'
+import ResultSheetCard from '../../common/cards/action/ResultSheetCard'
 import useFetch from '../../../hook/useFetch'
 
-const AgentActions = () => {
+const ResultSheet = () => {
   const router = useRouter();
   const { data, isLoading, isError } = useFetch(
-    'search', { query: 'React Developer', page: 1, num_pages: 1 }
+    'sheet', { query: 'React Developer', page: 1, num_pages: 1 }
   )
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Agent Actions</Text>
+        <View>
+            <Text style={styles.headerTitle}>Presidential Results</Text>
+            <Text style={styles.headerMedium}>A090783 - Action Church Aiyinase</Text>
+        </View>
         <TouchableOpacity>
           <Text style={styles.headerBtn}>Show All</Text>
         </TouchableOpacity>
@@ -29,9 +32,9 @@ const AgentActions = () => {
           <Text>Something went wrong</Text>
         ) : (
           data?.map((job) => (
-            <NearbyJobCard 
+            <ResultSheetCard 
              job={job}
-             key={`nearby-job-${job?.job_id}`}
+             key={`action-${job?.pk}`}
              handleNavigate={() => router.push(`/job-details/${job?.job_id}`)}
             />
           ))
@@ -42,4 +45,4 @@ const AgentActions = () => {
   )
 }
 
-export default AgentActions
+export default ResultSheet
