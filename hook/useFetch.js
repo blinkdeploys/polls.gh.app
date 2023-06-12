@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { navigation, mockResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
+import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
 import axios from 'axios'
 // import { RAPID_API_KEY } from '@env'
 
@@ -27,8 +27,10 @@ const useFetch = (endpoint, query) => {
         try {
             // const response = await axios(options);
             let response = { data: { data: [] }}
-            if (endpoint === 'sheet') {
-                response = mockResultSheet
+            if (endpoint === 'presidential_sheet') {
+                response = mockPresidentialResultSheet
+            } else if (endpoint === 'parliamentary_sheet') {
+                response = mockParliamentaryResultSheet
             } else if (endpoint === 'nav') {
                 response = navigation
             } else if (endpoint === 'job-details') {
