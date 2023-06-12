@@ -16,7 +16,7 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         style={styles.logoContainer}
       >
         <Image
-          source={{ uri: checkImageURL(job.employer_logo) ? job.employer_logo : images.defaultLogo }}
+          source={{ uri: checkImageURL(job?.employer_logo) ? job?.employer_logo : images.defaultLogo }}
           resizeMode="contain"
           style={styles.logoImage}
         />
@@ -25,14 +25,10 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         style={styles.textContainer}
       >
         <Text
-          style={styles.jobName}
+          style={styles?.jobName}
           numberOfLines={1}
-        >{job.job_title}</Text>
-        {(job?.station) ? <Text style={styles.jobType} >{job?.station}</Text> : null}
-        {(job?.constituency) ? <Text style={styles.jobType} >{job?.constituency}</Text> : null}
-        {(job?.region) ? <Text style={styles.jobType} >{job?.region}</Text> : null}
-        {(job?.job_employment_type) ? <Text style={styles.jobType} >{job?.job_employment_type}</Text> : null}
-        
+        >{job.title}</Text>
+        {(job?.detail) ? <Text style={styles.jobType} >{job?.detail}</Text> : null}
       </View>
     </TouchableOpacity>
   )

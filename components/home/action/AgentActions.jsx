@@ -7,7 +7,7 @@ import { COLORS } from '../../../constants'
 import AgentActionCard from '../../common/cards/action/AgentActionCard'
 import useFetch from '../../../hook/useFetch'
 
-const AgentActions = () => {
+const AgentActions = ({ selectMode }) => {
   const router = useRouter();
   const { data, isLoading, isError } = useFetch(
     'nav', { query: 'React Developer', page: 1, num_pages: 1 }
@@ -16,7 +16,16 @@ const AgentActions = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Agent Actions</Text>
+        <View>
+          <Text style={{
+            ...styles.headerTitle,
+            fontWeight: 'bold'
+          }}>ACTION CHURCH AIYINASE</Text>
+          <Text style={{
+          }}>ELLEMBELE Constituency</Text>
+          <Text style={{
+          }}>WESTERN Region</Text>
+        </View>
         <TouchableOpacity>
           <Text style={styles.headerBtn}>Show All</Text>
         </TouchableOpacity>
@@ -30,9 +39,10 @@ const AgentActions = () => {
         ) : (
           data?.map((job) => (
             <AgentActionCard 
-             job={job}
-             key={`action-${job?.job_id}`}
-             handleNavigate={() => router.push(`/${job?.path}`)}
+              job={job}
+              key={`action-${job?.id}`}
+              handleNavigate={() => selectMode(`${job?.path}`)}
+              // handleNavigate={() => router.push(`/${job?.path}`)}
             />
           ))
         )}

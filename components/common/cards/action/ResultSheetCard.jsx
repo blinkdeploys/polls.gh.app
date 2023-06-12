@@ -23,11 +23,12 @@ const AgentActionCard = ({ job, handleNavigate }) => {
       </View>
       <TouchableOpacity
         style={styles.voteContainer}
+        onPress={handleNavigate}
       >
-          <Text
-            style={styles.jobName}
-            numberOfLines={1}
-          >{job.total_votes > 0 ? job.total_votes : '+'}</Text>
+        <Text
+          style={styles.jobName}
+          numberOfLines={1}
+        >{job.total_votes > 0 ? job.total_votes : '+'}</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   )
