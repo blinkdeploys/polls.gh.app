@@ -30,14 +30,6 @@ const navigation = {
         "done": false,
       },
       {
-        "id": "coYJOHUuKwQAAAAAAAAAAA==",
-        "detail": "0 / 14 Parties in Polling Station",
-        "title": "Upload EC Summary Sheet (Polling Station)",
-        "path": "file",
-        "required": true,
-        "done": false,
-      },
-      {
         "id": "Z5O-WYY9YPkAAAAAAAAAAA==",
         "detail": "No results approved yet.",
         "title": "Approve Entered Results",
@@ -55,6 +47,17 @@ const navigation = {
     ]
   }
 }
+
+/*
+{
+  "id": "coYJOHUuKwQAAAAAAAAAAA==",
+  "detail": "0 / 14 Parties in Polling Station",
+  "title": "Upload EC Summary Sheet (Polling Station)",
+  "path": "file",
+  "required": true,
+  "done": false,
+},
+*/
 
 const mockPresidentialResultSheet = {
   data: {
