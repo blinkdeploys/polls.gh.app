@@ -25,19 +25,28 @@ const Home = () => {
                             handlePress={() => setMode('')} />
                     ),
                     headerRight: () => (
-                        <ScreenHeaderBtn iconUrl={images.profile} dimension="90%" />
+                        <ScreenHeaderBtn iconUrl={images.profile} dimension="80%" />
                     ),
-                    headerTitle: ""
+                    headerTitle: () => (
+                        <View>
+                            <Text
+                                style={{
+                                    fontWeight: 'bold', fontSize: 18,
+                                    paddingHorizontal: 10,
+                                }}
+                            >Polls.GH</Text>
+                        </View>
+                    )
                 }}
             />
             <ScrollView showVerticalScrollIndicator={false}>
                 <View
                     style={{
                         flex: 1,
-                        padding: SIZES.medium
+                        paddingHorizontal: SIZES.medium
                     }}
                 >
-                    <Welcome
+                    {/*<Welcome
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
                         handleClick={() => {
@@ -45,7 +54,7 @@ const Home = () => {
                                 router.push(`/search/${searchTerm}`)
                             }
                         }}
-                    />
+                    />*/}
                     {(mode === 'presidential_sheet')
                         ? <ResultSheet
                             title="Presidential Results"
@@ -63,18 +72,20 @@ const Home = () => {
                             />
                         : <></>}
                     {(mode == 'presidential_sheet_file')
-                    ? <ECSummary
+                        ? <ECSummary
                             title="EC Summary Document"
                             goHome={() => setMode('presidential_sheet')}
                             />
-                    : <></>}
+                        : <></>}
                     {(mode == 'parliamentary_sheet_file')
-                    ? <ECSummary
+                        ? <ECSummary
                             title="EC Summary Document"
                             goHome={() => setMode('parliamentary_sheet')}
                             />
-                    : <></>}
-                    {(mode === '') ? <AgentActions selectMode={setMode} /> : <></>}
+                        : <></>}
+                    {(mode === '')
+                        ? <AgentActions selectMode={setMode} />
+                        : <></>}
                 </View>
             </ScrollView>
         </SafeAreaView>
