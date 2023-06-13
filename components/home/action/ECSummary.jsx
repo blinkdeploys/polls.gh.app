@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 
+import CameraScreen from './CameraScreen.jsx'
 import styles from './agentActions.style'
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../../constants'
@@ -9,6 +10,7 @@ import { COLORS, SIZES } from '../../../constants'
 
 const ECSummary = ({ title, goHome }) => {
   const [filePath, setFilePath] = useState('')
+  const [showCamera, setShowCamera] = useState(false)
   const pickFile = async () => {
     try {
       const file = await DocumentPicker.getDocumentAsync({
@@ -41,7 +43,7 @@ const ECSummary = ({ title, goHome }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <View
         style={{
           ...styles.header,
@@ -82,21 +84,25 @@ const ECSummary = ({ title, goHome }) => {
         </TouchableOpacity>
       </View>
 
-      <View
-        style={{
-          padding: 10,
-          margin: 5,
-      }}
-      >
-        <Text
+      {!showCamera
+        ? <View
           style={{
-            fontSize: 18,
-            marginVertical: 10,
-          }}
-        >Upload a copy of the EC Summary Sheet.</Text>
-        {/*<Text
-        >A copy of the EC Summary Sheet is required to be submitted as proof of the polling results.</Text>*/}
-      </View>
+            padding: 10,
+            margin: 5,
+        }}
+        >
+          <Text
+            style={{
+              fontSize: 18,
+              marginVertical: 10,
+            }}
+          >Upload a copy of the EC Summary Sheet.</Text>
+          {/*<Text
+          >A copy of the EC Summary Sheet is required to be submitted as proof of the polling results.</Text>*/}
+          </View>
+        : <></>}
+
+      {showCamera ? <CameraScreen /> : <></>}
 
       <View
         style={{
@@ -121,10 +127,9 @@ const ECSummary = ({ title, goHome }) => {
           }
         </View>
       </View>
-        
-
+      
       <TouchableOpacity
-          onPress={pickFile}
+          onPress={() => setShowCamera(true)}
           style={{
             backgroundColor: '#000000',
             padding: 10,
