@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
 import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
 
 import styles from './agentActions.style'
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../../constants'
+
 
 const ECSummary = ({ title, goHome }) => {
   const [filePath, setFilePath] = useState('')
