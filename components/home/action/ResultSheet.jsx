@@ -61,7 +61,7 @@ const ResultSheet = ({ title, mode, goHome, selectMode }) => {
 
 
   return (
-    <View style={styles.container}>
+    <View>
 
       <View
         style={styles.header}

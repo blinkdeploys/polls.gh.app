@@ -15,7 +15,7 @@ const AgentActions = ({ selectMode }) => {
   )
 
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.header}>
         <View>
           <Text style={{
