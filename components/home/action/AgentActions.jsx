@@ -6,6 +6,7 @@ import styles from './agentActions.style'
 import { COLORS } from '../../../constants'
 import AgentActionCard from '../../common/cards/action/AgentActionCard'
 import useFetch from '../../../hook/useFetch'
+import { AntDesign } from '@expo/vector-icons';
 
 const AgentActions = ({ selectMode }) => {
   const router = useRouter();
@@ -27,7 +28,9 @@ const AgentActions = ({ selectMode }) => {
           }}>WESTERN Region</Text>
         </View>
         <TouchableOpacity>
-          <Text style={styles.headerBtn}>Show All</Text>
+          <Text style={styles.headerBtn}>
+            <AntDesign name="ellipsis1" size={24} color="black" />
+          </Text>
         </TouchableOpacity>
       </View>
 

@@ -3,7 +3,7 @@ import { View, ScrollView, SafeAreaView, Text } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
 import { COLORS, SIZES, icons, images } from '../constants'
 import {
-    ResultSheet, AgentActions, Popularjobs, ScreenHeaderBtn, Welcome
+    ResultSheet, AgentActions, ECSummary, ScreenHeaderBtn, Welcome
 } from '../components'
 
 const Home = () => {
@@ -25,7 +25,7 @@ const Home = () => {
                             handlePress={() => setMode('')} />
                     ),
                     headerRight: () => (
-                        <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" />
+                        <ScreenHeaderBtn iconUrl={images.profile} dimension="90%" />
                     ),
                     headerTitle: ""
                 }}
@@ -50,14 +50,30 @@ const Home = () => {
                         ? <ResultSheet
                             title="Presidential Results"
                             mode={mode}
-                            goHome={() => setMode('')} />
+                            goHome={() => setMode('')}
+                            selectMode={setMode}
+                            />
                         : <></>}
                     {(mode === 'parliamentary_sheet')
                         ? <ResultSheet
                             title="Parliamentary Results"
                             mode={mode}
-                            goHome={() => setMode('')} />
+                            goHome={() => setMode('')}
+                            selectMode={setMode}
+                            />
                         : <></>}
+                    {(mode == 'presidential_sheet_file')
+                    ? <ECSummary
+                            title="EC Summary Document"
+                            goHome={() => setMode('presidential_sheet')}
+                            />
+                    : <></>}
+                    {(mode == 'parliamentary_sheet_file')
+                    ? <ECSummary
+                            title="EC Summary Document"
+                            goHome={() => setMode('parliamentary_sheet')}
+                            />
+                    : <></>}
                     {(mode === '') ? <AgentActions selectMode={setMode} /> : <></>}
                 </View>
             </ScrollView>

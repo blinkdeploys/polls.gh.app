@@ -4,6 +4,7 @@ import ScreenHeaderBtn from "./common/header/ScreenHeaderBtn";
 import Welcome from "./home/welcome/Welcome";
 import AgentActions from "./home/action/AgentActions";
 import ResultSheet from "./home/action/ResultSheet";
+import ECSummary from "./home/action/ECSummary";
 import Popularjobs from "./home/popular/Popularjobs";
 
 // job details screen
@@ -24,6 +25,7 @@ export {
   AgentActionCard,
   ResultSheet,
   ResultSheetCard,
+  ECSummary,
   Popularjobs,
   Company,
   JobTabs,

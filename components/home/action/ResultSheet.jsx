@@ -6,9 +6,10 @@ import { useRouter } from 'expo-router'
 import styles from './agentActions.style'
 import { COLORS, SIZES } from '../../../constants'
 import ResultSheetCard from '../../common/cards/action/ResultSheetCard'
+import AgentActionCard from '../../common/cards/action/AgentActionCard'
 import useFetch from '../../../hook/useFetch'
 
-const ResultSheet = ({ title, mode, goHome }) => {
+const ResultSheet = ({ title, mode, goHome, selectMode }) => {
   const router = useRouter();
   const { data, isLoading, isError } = useFetch(
     mode, { query: 'React Developer', page: 1, num_pages: 1 }
@@ -38,6 +39,12 @@ const ResultSheet = ({ title, mode, goHome }) => {
   const okOverlay = () => {
     data[modalCandidateId] = modalCandidate
     setOverlayVisible(false);
+  }
+
+  const task = {
+    title: "EC Summary Sheet",
+    detail: `Upload EC Summary Sheet for ${title}`,
+    path: mode,
   }
 
   const toggleOverlay = (c=null) => {
@@ -92,6 +99,15 @@ const ResultSheet = ({ title, mode, goHome }) => {
           }}>Save</Text>
         </TouchableOpacity>
       </View>
+
+      <View style={styles.cardsContainer}>
+        <AgentActionCard 
+          job={task}
+          key={`action-upload-${task?.id}`}
+          handleNavigate={() => selectMode(`${mode}_file`)}
+          />
+      </View>
+
 
       <View style={styles.cardsContainer}>
         {isLoading ? (
