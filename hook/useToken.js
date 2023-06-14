@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+
 const URL = 'https://app.blinkdeploys-env.blinkdeploys.arc.domains/api/poll/app/csrf/' // 'https://www.localhost.architect.sh/api/poll/app/login/'
 
 const useToken = () => {
@@ -12,17 +13,16 @@ const useToken = () => {
 
     try {
         const response = await fetch(URL, {
-                                        'method': 'POST',
+                                        'method': 'GET',
                                         'headers': {
                                             'Content-Type': 'application/json',
                                         },
-                                        'body': JSON.stringify({}),
                                     });
         if (!response.ok) {
-            throw new Error('Login failed');
+            throw new Error('Token fetch failed');
         }
         const data = await response.json();
-        return data.token;
+        return data.csrfToken;
     } catch (error) {
         setError(error.message);
         return null;
