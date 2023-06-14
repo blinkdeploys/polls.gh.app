@@ -8,7 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import styles from './agentActionCard.style'
 
 
-const AgentActionCard = ({ job, handleNavigate }) => {
+const AgentActionCard = ({ task, handleNavigate }) => {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -17,18 +17,11 @@ const AgentActionCard = ({ job, handleNavigate }) => {
       <TouchableOpacity
         style={styles.logoContainer}
       >
-        {(job.required === true)
-        ? ((job.done === true)
+        {(task.required === true)
+        ? ((task.done === true)
             ? <AntDesign name="check" size={24} color="black" />
             : <Feather name="square" size={24} color="black" />)
         : <AntDesign name="ellipsis1" size={24} color="black" />}
-        {/*
-        <Image
-          source={{ uri: checkImageURL(job?.employer_logo) ? job?.employer_logo : images.defaultLogo }}
-          resizeMode="contain"
-          style={styles.logoImage}
-          />
-        */}
       </TouchableOpacity>
       <View
         style={styles.textContainer}
@@ -36,8 +29,8 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         <Text
           style={styles?.jobName}
           numberOfLines={1}
-        >{job.title}</Text>
-        {(job?.detail) ? <Text style={styles.jobType} >{job?.detail}</Text> : null}
+        >{task.title}</Text>
+        {(task?.detail) ? <Text style={styles.jobType} >{task?.detail}</Text> : null}
       </View>
     </TouchableOpacity>
   )

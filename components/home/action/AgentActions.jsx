@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useRouter } from 'expo-router'
 
@@ -13,7 +13,6 @@ const AgentActions = ({ selectMode }) => {
   const { data, isLoading, isError } = useFetch(
     'nav', { query: 'React Developer', page: 1, num_pages: 1 }
   )
-
   return (
     <View>
       <View style={styles.header}>
@@ -40,12 +39,11 @@ const AgentActions = ({ selectMode }) => {
         ) : isError ? (
           <Text>Something went wrong</Text>
         ) : (
-          data?.map((job) => (
+          data?.map((task) => (
             <AgentActionCard 
-              job={job}
-              key={`action-${job?.id}`}
-              handleNavigate={() => selectMode(`${job?.path}`)}
-              // handleNavigate={() => router.push(`/${job?.path}`)}
+              task={task}
+              key={`action-${task?.id}`}
+              handleNavigate={() => selectMode(`${task?.path}`)}
             />
           ))
         )}
