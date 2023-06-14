@@ -2,6 +2,7 @@ import ScreenHeaderBtn from "./common/header/ScreenHeaderBtn";
 
 // home screen
 import Welcome from "./home/welcome/Welcome";
+import LoginScreen from "./home/action/LoginScreen";
 import AgentActions from "./home/action/AgentActions";
 import ResultSheet from "./home/action/ResultSheet";
 import ECSummary from "./home/action/ECSummary";
@@ -21,6 +22,7 @@ import ResultSheetCard from "./common/cards/action/ResultSheetCard";
 export {
   ScreenHeaderBtn,
   Welcome,
+  LoginScreen,
   AgentActions,
   AgentActionCard,
   ResultSheet,
