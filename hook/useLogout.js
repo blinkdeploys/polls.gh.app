@@ -19,7 +19,7 @@ const useLogin = () => {
                                         'body': JSON.stringify({}),
                                     });
         if (!response.ok) {
-            throw new Error('Login failed');
+            throw new Error('Logout failed');
         }
         const data = await response.json();
         return data.token;
