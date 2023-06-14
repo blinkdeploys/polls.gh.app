@@ -38,7 +38,7 @@ const navigation = {
         "done": true,
       },
       {
-        "if": "kXc3RgeQqSEAAAAAAAAAAA==",
+        "id": "kXc3RgeQqSEAAAAAAAAAAA==",
         "detail": "Ends session",
         "title": "Logout",
         "path": "logout",
