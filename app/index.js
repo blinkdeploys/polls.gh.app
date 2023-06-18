@@ -11,6 +11,7 @@ import {
     removeAuthToken, removeCSRFToken, removeUserProfile,
     isValid,
 } from '../utils'
+import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './index.style'
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
     const [userProfile, setUserProfile] = useState('')
     const [mode, setMode] = useState('')
     const [isGuest, setIsGuest] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         fetchAuth()
@@ -44,13 +46,13 @@ const Home = () => {
 
     useEffect(() => {
         if (mode === 'logout') {
-            console.log('logging out....')
             ditchAuth()
         }
     }, [mode])
 
 
     const ditchAuth = async () => {
+        setIsLoading(true)
         await removeUserProfile()
         await removeAuthToken()
         await removeCSRFToken()
@@ -58,6 +60,7 @@ const Home = () => {
         setToken('')
         setCsrfToken('')
         setMode('')
+        setIsLoading(false)
     }
 
     const fetchAuth = async () => {
@@ -96,6 +99,10 @@ const Home = () => {
                 <Text>{csrfToken}</Text>
                 <Text>{userProfile?.username} {userProfile?.email}</Text>
             </View>}
+
+            <Spinner visible={isLoading} 
+                    textContent={'Ending session...'}
+                    textStyle={{ color: '#FFF' }} />
 
             {!isValid(userProfile) && <LoginScreen onLogin={fetchAuth} />}
 

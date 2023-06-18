@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import useLogin from '../../../hook/useLogin';
 import useLogout from '../../../hook/useLogout';
 import styles from './agentActions.style'
@@ -14,6 +15,8 @@ import {
 const LoginScreen = ({ onLogin, onFailure }) => {
   const [username, setUsername] = useState('eakatue');
   const [password, setPassword] = useState('pollsgh.2023.$$');
+  const [loadingMessage, setLoadingMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const { loading, error, login } = useLogin();
   
   const handleLogin = async () => {
@@ -22,8 +25,12 @@ const LoginScreen = ({ onLogin, onFailure }) => {
 
     // Retreive from login
     if (!isValid(data)) {
+        setLoadingMessage('Logging in...')
+        setIsLoading(true)
         await login(username, password)
         data = await getUserProfile()
+        setLoadingMessage('')
+        setIsLoading(false)
     }
 
     // change screen states
@@ -57,6 +64,11 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                 marginVertical: 25,
             }}
         >
+            
+            <Spinner visible={isLoading} 
+                textContent={loadingMessage}
+                textStyle={{ color: '#FFF' }} />
+
             {error && <Text
                 style={{
                     padding: 8,
@@ -65,9 +77,12 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                 >Error: {error}</Text>}
             <TextInput
                 style={{
-                    fontSize: SIZES.large,
-                    padding: 12,
                     marginVertical: 7,
+                    paddingVertical: 12,
+                    paddingHorizontal: 15,
+                    borderRadius: SIZES.medium,
+                    fontSize: SIZES.large,
+                    backgroundColor: COLORS.white,
                 }}
                 placeholder="Username"
                 value={username}
@@ -75,9 +90,12 @@ const LoginScreen = ({ onLogin, onFailure }) => {
             />
             <TextInput
                 style={{
-                    fontSize: SIZES.large,
-                    padding: 12,
                     marginVertical: 7,
+                    paddingVertical: 12,
+                    paddingHorizontal: 15,
+                    borderRadius: SIZES.medium,
+                    fontSize: SIZES.large,
+                    backgroundColor: COLORS.white,
                 }}
                 placeholder="Password"
                 secureTextEntry
