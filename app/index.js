@@ -1,79 +1,75 @@
 import React, { useState, useEffect } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
 import { COLORS, SIZES, icons, images } from '../constants'
 import {
     ResultSheet, AgentActions, ECSummary, ScreenHeaderBtn, LoginScreen, Welcome
 } from '../components'
+import {
+    getAuthToken, getCSRFToken, getUserProfile,
+    saveAuthToken, saveCSRFToken, saveUserProfile,
+    removeAuthToken, removeCSRFToken, removeUserProfile,
+    isValid,
+} from '../utils'
 import styles from './index.style'
 
 const Home = () => {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('')
     const [token, setToken] = useState('')
+    const [csrfToken, setCsrfToken] = useState('')
+    const [userProfile, setUserProfile] = useState('')
     const [mode, setMode] = useState('')
     const [isGuest, setIsGuest] = useState(true)
 
-    const fetchAsyncToken = async () => {
-        return await AsyncStorage.getItem('token')
-    }
-
-    const setAsyncToken = async (token) => {
-        if (typeof token === 'string') {
-            await AsyncStorage.setItem('token', token)
-        }
-    }
-
     useEffect(() => {
-        let token = fetchAsyncToken()
-        if (token instanceof Promise) {
-            token = token.then((data) => {
-                setToken(data)
-                setAsyncToken(data)
-            }).catch((err) => console.log(err))
-        } else if (typeof token == 'string') {
-            setToken(token)
-        } else {
-            console.log('error fetching token... loggin out')
-        }
+        fetchAuth()
     }, [])
 
     useEffect(() => {
-        console.log(mode)
+    }, [token])
+
+    useEffect(() => {
+        // refresh the csrf token if the user is still logged in
+        if (typeof csrfToken !== 'string') { setCsrfToken('') }
+        if (isValid(csrfToken)) {
+            setIsGuest(false)
+            // console.log(`Token established! ${csrfToken}`)
+        } else {
+            setIsGuest(true)
+            console.log(`No token found!`)
+        }
+        // console.log("Is Guest: ", isGuest)
+    }, [csrfToken])
+
+    useEffect(() => {
         if (mode === 'logout') {
             console.log('logging out....')
-            setToken('')
-            setAsyncToken('')
+            ditchAuth()
         }
     }, [mode])
 
-    useEffect(() => {
-        if (typeof token !== 'string') { setToken('') }
-        if (isValid(token)) {
-            setIsGuest(false)
-            console.log(`Token established! ${token}`)
-        } else {
-            setIsGuest(true)
-            console.log(`Not token found!`)
-        }
-        console.log("Is Guest: ", isGuest)
-    }, [token])
 
-    const handleLogin = (token) => {
-        setToken(token)
-        setMode('')
-    }
-
-    const handleLogout = () => {
+    const ditchAuth = async () => {
+        await removeUserProfile()
+        await removeAuthToken()
+        await removeCSRFToken()
+        setUserProfile(null)
         setToken('')
-        setAsyncToken('')
+        setCsrfToken('')
         setMode('')
     }
 
-    const isValid = (item) => {
-        return !(['', undefined, null, false].includes(item))
+    const fetchAuth = async () => {
+        const user = await getUserProfile()
+        const token = await getAuthToken()
+        const csrf = await getCSRFToken()
+        setUserProfile(user)
+        setToken(token)
+        setCsrfToken(csrf)
+        setMode('')
     }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -94,9 +90,16 @@ const Home = () => {
                     )
                 }}
                 />
-            {!isValid(token) && <LoginScreen onLogin={handleLogin} />}
 
-            {isValid(token) && <ScrollView
+            {false && <View>
+                <Text>{token}</Text>
+                <Text>{csrfToken}</Text>
+                <Text>{userProfile?.username} {userProfile?.email}</Text>
+            </View>}
+
+            {!isValid(userProfile) && <LoginScreen onLogin={fetchAuth} />}
+
+            {isValid(userProfile) && <ScrollView
                 showVerticalScrollIndicator={false}
                 style={styles.scrollViewContainer}
                 >
@@ -128,8 +131,9 @@ const Home = () => {
                             goHome={() => setMode('parliamentary_sheet')}
                             />
                         : <></>}
-                    {!isValid(mode) && <AgentActions selectMode={setMode} />}
+                    {!isValid(mode) && <AgentActions user={userProfile} selectMode={setMode} />}
             </ScrollView>}
+
         </SafeAreaView>
     );
 }
