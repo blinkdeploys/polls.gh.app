@@ -3,46 +3,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import useLogin from '../../../hook/useLogin';
 import useLogout from '../../../hook/useLogout';
-import useToekn from '../../../hook/useToken';
 import styles from './agentActions.style'
 import { COLORS, SIZES } from '../../../constants'
+import {
+    getAuthToken, getCSRFToken, getUserProfile,
+    saveAuthToken, saveCSRFToken, saveUserProfile,
+    isValid
+} from '../../../utils'
 
-const LoginScreen = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginScreen = ({ onLogin, onFailure }) => {
+  const [username, setUsername] = useState('eakatue');
+  const [password, setPassword] = useState('pollsgh.2023.$$');
   const { loading, error, login } = useLogin();
-  const { getToken } = useToekn();
-
-  const setAsyncToken = async (token) => {
-    if (token) { await AsyncStorage.setItem('token', token); }
-  }
-
-  // transfer to helper
-  const tokenIsValid = (token) => {
-    return (!(token === null
-            || token === undefined
-            || token === false
-            || token === ''))
-  }
-
+  
   const handleLogin = async () => {
-    // Retrieving the token from async storage
-    let token = await AsyncStorage.getItem('token');
-
-    // Retrieving the token from api
-    if (!tokenIsValid(token)) {
-        token = await getToken()
-    }
+    // Retrieving the user profile from async storage
+    let data = await getUserProfile()
 
     // Retreive from login
-    if (!tokenIsValid(token)) {
-        token = await login(username, password)
+    if (!isValid(data)) {
+        await login(username, password)
+        data = await getUserProfile()
     }
 
     // change screen states
-    if (tokenIsValid(token)) {
-        setAsyncToken(token)
-        onLogin(token)
+    if (isValid(data)) {
+        await saveUserProfile(data || null)
+        await saveAuthToken(data.token || '')
+        await saveCSRFToken(data.csrfToken || '')
+        onLogin()
+    }
+
+    if (!isValid(data)) {
+        console.log('Error logging in. Please try again.')
     }
 };
 
@@ -77,7 +70,7 @@ const LoginScreen = ({ onLogin }) => {
                     marginVertical: 7,
                 }}
                 placeholder="Username"
-                value={username || 'eakatue'}
+                value={username}
                 onChangeText={setUsername}
             />
             <TextInput
@@ -88,7 +81,7 @@ const LoginScreen = ({ onLogin }) => {
                 }}
                 placeholder="Password"
                 secureTextEntry
-                value={password || 'pollsgh.2023.$$'}
+                value={password}
                 onChangeText={setPassword}
             />
         </View>
