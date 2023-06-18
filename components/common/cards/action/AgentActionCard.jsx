@@ -17,8 +17,8 @@ const AgentActionCard = ({ task, handleNavigate }) => {
       <TouchableOpacity
         style={styles.logoContainer}
       >
-        {(task.required === true)
-        ? ((task.done === true)
+        {(task?.required === true)
+        ? ((task?.done === true)
             ? <AntDesign name="check" size={24} color="black" />
             : <Feather name="square" size={24} color="black" />)
         : <AntDesign name="ellipsis1" size={24} color="black" />}
@@ -29,7 +29,7 @@ const AgentActionCard = ({ task, handleNavigate }) => {
         <Text
           style={styles?.jobName}
           numberOfLines={1}
-        >{task.title}</Text>
+        >{task?.title}</Text>
         {(task?.detail) ? <Text style={styles.jobType} >{task?.detail}</Text> : null}
       </View>
     </TouchableOpacity>
