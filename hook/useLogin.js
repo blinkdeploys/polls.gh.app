@@ -1,30 +1,37 @@
 import { useState } from 'react';
+import { saveAuthToken, saveCSRFToken, saveUserProfile } from '../utils'
+import useCsrfToken from './useCsrfToken'
+import { URL, URL_LOCALHOST } from './constants'
 
-const URL = 'https://app.blinkdeploys-env.blinkdeploys.arc.domains/api/poll/app/login/' // 'https://www.localhost.architect.sh/api/poll/app/login/'
 
 const useLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { getCsrfToken } = useCsrfToken()
 
   const login = async (username, password) => {
+    const endpoint = 'login'
+    const loginUrl = `${URL_LOCALHOST}${endpoint}/`
+    const body = JSON.stringify({ username, password })
+    const csrfToken = await getCsrfToken()
     setLoading(true);
     setError(null);
     try {
-        const response = await fetch(URL, {
+        const response = await fetch(loginUrl, {
                                         'method': 'POST',
                                         'headers': {
                                             'Content-Type': 'application/json',
+                                            'X-CSRFToken': csrfToken,
                                         },
-                                        'body': JSON.stringify({ username, password }),
+                                        'body': body,
                                     });
-        // console.log('*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
-        // console.log(response)
-        // console.log('*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
         if (!response.ok) {
             throw new Error(`Login failed (${response.status})`);
         }
         const data = await response.json();
-        return data.token;
+        saveAuthToken(data?.token)
+        saveCSRFToken(data?.csrfToken)
+        saveUserProfile(data)
     } catch (error) {
         setError(error.message);
         return null;
