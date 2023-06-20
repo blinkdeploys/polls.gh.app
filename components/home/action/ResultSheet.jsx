@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Modal, TextInput, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { useRouter } from 'expo-router'
 
@@ -8,15 +9,30 @@ import { COLORS, SIZES } from '../../../constants'
 import ResultSheetCard from '../../common/cards/action/ResultSheetCard'
 import AgentActionCard from '../../common/cards/action/AgentActionCard'
 import useFetch from '../../../hook/useFetch'
+import usePost from '../../../hook/usePost'
+import useFetchProtected from '../../../hook/useFetchProtected'
 
-const ResultSheet = ({ title, mode, goHome, selectMode }) => {
+const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const router = useRouter();
-  const { data, isLoading, isError } = useFetch(
-    mode, { query: 'React Developer', page: 1, num_pages: 1 }
-  )
+  const { fetchData, isLoading, isError } = useFetchProtected()
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
+  const [data, setData] = useState([]);
+  const post = usePost()
+
+  useEffect(() => {
+    const init = async () => {
+      const initData = await fetchData(mode, user?.zone?.pk)
+      setData(initData)
+    }
+    init()
+  }, [])
+
+
+  const handleSubmit = () => {
+    const result = post.postData(mode, user?.zone?.pk, data)
+  }
 
   const setCandidate = (candidate={}) => {
     setModalCandidate(candidate);
@@ -82,27 +98,72 @@ const ResultSheet = ({ title, mode, goHome, selectMode }) => {
         </TouchableOpacity>
         <View>
             <Text style={styles.headerTitle}>{title}</Text>
-            <Text style={styles.headerMedium}>A090783</Text>
-            <Text style={styles.headerMedium}>Action Church Aiyinase</Text>
+            <Text style={styles.headerMedium}>{user.zone.station_code} {user.zone.station_title}</Text>
+            <Text style={styles.headerMedium}>{user.zone.constituency_title} Constituency</Text>
+            <Text style={styles.headerMedium}>{user.zone.region_title} Region</Text>
         </View>
+      </View>
+
+      {post.message &&
+      <View
+        style={{
+          backgroundColor: COLORS.gray,
+          paddingHorizontal: 20,
+          paddingVertical: 15,
+          borderRadius: 5,
+          marginTop: 25,
+        }}
+      >
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: 17,
+            fontWeight: 'bold',
+            paddingHorizontal: 10,
+            paddingBottom: 5,
+          }}
+        >{(post.isError) ? 'Success' : 'Error'}</Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: 15,
+            paddingHorizontal: 10,
+            paddingTop: 5,
+          }}
+        >{post.message}</Text>
+      </View>}
+
+      <View
+        style={{
+          marginVertical: 15,
+        }}
+      >
         <TouchableOpacity
+          onPress={handleSubmit}
           style={{
             backgroundColor: '#000000',
-            padding: 8,
+            padding: 15,
             borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
           }}
         >
           <Text style={{
             ...styles.headerBtn,
             color: COLORS.white,
             fontWeight: 'bold',
-          }}>Save</Text>
+          }}>Save Results</Text>
         </TouchableOpacity>
       </View>
 
+      <Spinner visible={post.isLoading} 
+                textContent={'Saving...'}
+                textStyle={{ color: '#FFF' }} />
+
       <View style={styles.cardsContainer}>
         <AgentActionCard 
-          job={task}
+          task={task}
           key={`action-upload-${task?.id}`}
           handleNavigate={() => selectMode(`${mode}_file`)}
           />

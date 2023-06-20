@@ -19,8 +19,9 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         <Text
           style={styles.jobName}
           numberOfLines={1}
-        >{job.party__code}</Text>
-        {(job?.party__title) ? <Text style={styles.jobType} >{job?.party__title}</Text> : null}
+        >{job?.party__code}</Text>
+        {(false && job?.party__title) ? <Text style={styles.jobType} >{job?.party__title}</Text> : null}
+        {(job?.candidate_name) ? <Text style={styles.jobType} >{job?.candidate_name}</Text> : null}
       </View>
       <TouchableOpacity
         style={styles.voteContainer}
