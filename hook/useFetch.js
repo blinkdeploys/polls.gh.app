@@ -40,7 +40,6 @@ const useFetch = (endpoint, query) => {
             }
             setData(response.data.data);
             console.log('Data retreived successfully.');
-            // console.log(response.data.data.length);
         } catch (error) {
             console.log('There was an error accessing the endpoint')
             setIsError(error)
