@@ -36,12 +36,10 @@ const Home = () => {
         if (typeof csrfToken !== 'string') { setCsrfToken('') }
         if (isValid(csrfToken)) {
             setIsGuest(false)
-            // console.log(`Token established! ${csrfToken}`)
         } else {
             setIsGuest(true)
             console.log(`No token found!`)
         }
-        // console.log("Is Guest: ", isGuest)
     }, [csrfToken])
 
     useEffect(() => {
@@ -114,6 +112,7 @@ const Home = () => {
                         ? <ResultSheet
                             title="Presidential Results"
                             mode={mode}
+                            user={userProfile}
                             goHome={() => setMode('')}
                             selectMode={setMode}
                             />
@@ -122,6 +121,7 @@ const Home = () => {
                         ? <ResultSheet
                             title="Parliamentary Results"
                             mode={mode}
+                            user={userProfile}
                             goHome={() => setMode('')}
                             selectMode={setMode}
                             />
