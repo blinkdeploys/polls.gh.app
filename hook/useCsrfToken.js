@@ -11,7 +11,6 @@ const useCsrfToken = () => {
     setError(null);
     const endpoint = 'csrf'
     const url = `${URL_LOCALHOST}${endpoint}/`
-    // console.log('Fetching csrf token', url)
     try {
         const response = await fetch(url, {
                                         'method': 'GET',
@@ -25,7 +24,6 @@ const useCsrfToken = () => {
         const data = await response.json();
         return data.csrfToken;
     } catch (error) {
-        console.log(error.message)
         setError(error.message);
         return null;
     } finally {
