@@ -77,105 +77,105 @@ const mockPresidentialResultSheet = {
         "party__pk": 1,
         "party__code": "NDC",
         "party__title": "National Democratic Congress",
-        "total_votes": 45689
+        "votes": 45689
       },
       {
         "pk": 2,
         "party__pk": 2,
         "party__code": "NPP",
         "party__title": "New Patriotic Party",
-        "total_votes": 4583
+        "votes": 4583
       },
       {
         "pk": 3,
         "party__pk": 3,
         "party__code": "GUM",
         "party__title": "Ghana Union Movement",
-        "total_votes": 9695
+        "votes": 9695
       },
       {
         "pk": 4,
         "party__pk": 4,
         "party__code": "APC",
         "party__title": "All People's Congress",
-        "total_votes": 4583
+        "votes": 4583
       },
       {
         "pk": 5,
         "party__pk": 5,
         "party__code": "PPP", 
         "party__title": "Progressive People's Party",
-        "total_votes": 5849
+        "votes": 5849
       },
       {
         "pk": 6,
         "party__pk": 6,
         "party__code": "GPP", 
         "party__title": "Ghana Freedom Party",
-        "total_votes": 34594
+        "votes": 34594
       },
       {
         "pk": 7,
         "party__pk": 7,
         "party__code": "NDP", 
         "party__title": "National Democratic Party",
-        "total_votes": 245323
+        "votes": 245323
       },
       {
         "pk": 8,
         "party__pk": 8,
         "party__code": "CPP", 
         "party__title": "Convention People's Party",
-        "total_votes": 4069
+        "votes": 4069
       },
       {
         "pk": 9,
         "party__pk": 9,
         "party__code": "GCPP", 
         "party__title": "Great Consolidated Popular Party",
-        "total_votes": 59443
+        "votes": 59443
       },
       {
         "pk": 10,
         "party__pk": 10,
         "party__code": "UFP",
         "party__title": "United Front Party",
-        "total_votes": 45832
+        "votes": 45832
       },
       {
         "pk": 11,
         "party__pk": 11,
         "party__code": "UPP", 
         "party__title": "United Progressive Party",
-        "total_votes": 48593
+        "votes": 48593
       },
       {
         "pk": 12,
         "party__pk": 12,
         "party__code": "PAP", 
         "party__title": "People's Action Party",
-        "total_votes": 8493
+        "votes": 8493
       },
       {
         "pk": 13,
         "party__pk": 13,
         "party__code": "LPG", 
         "party__title": "Liberal Party of Ghana",
-        "total_votes": 34480
+        "votes": 34480
       },
       {
         "pk": 14,
         "party__pk": 14,
         "party__code": "PNC", 
         "party__title": "People's National Convention",
-        "total_votes": 485
+        "votes": 485
       },
       {
         "pk": 15,
         "party__pk": 15,
         "party__code": "IND", 
         "party__title": "Independent",
-        "total_votes": 74382
+        "votes": 74382
       }
     ]
   }
@@ -198,105 +198,105 @@ const mockParliamentaryResultSheet = {
         "party__pk": 1,
         "party__code": "NDC",
         "party__title": "National Democratic Congress",
-        "total_votes": 4555
+        "votes": 4555
       },
       {
         "pk": 2,
         "party__pk": 2,
         "party__code": "NPP",
         "party__title": "New Patriotic Party",
-        "total_votes": 68946
+        "votes": 68946
       },
       {
         "pk": 3,
         "party__pk": 3,
         "party__code": "GUM",
         "party__title": "Ghana Union Movement",
-        "total_votes": 9983
+        "votes": 9983
       },
       {
         "pk": 4,
         "party__pk": 4,
         "party__code": "APC",
         "party__title": "All People's Congress",
-        "total_votes": 8345
+        "votes": 8345
       },
       {
         "pk": 5,
         "party__pk": 5,
         "party__code": "PPP", 
         "party__title": "Progressive People's Party",
-        "total_votes": 85249
+        "votes": 85249
       },
       {
         "pk": 6,
         "party__pk": 6,
         "party__code": "GPP", 
         "party__title": "Ghana Freedom Party",
-        "total_votes": 343594
+        "votes": 343594
       },
       {
         "pk": 7,
         "party__pk": 7,
         "party__code": "NDP", 
         "party__title": "National Democratic Party",
-        "total_votes": 524433
+        "votes": 524433
       },
       {
         "pk": 8,
         "party__pk": 8,
         "party__code": "CPP", 
         "party__title": "Convention People's Party",
-        "total_votes": 44069
+        "votes": 44069
       },
       {
         "pk": 9,
         "party__pk": 9,
         "party__code": "GCPP", 
         "party__title": "Great Consolidated Popular Party",
-        "total_votes": 58933
+        "votes": 58933
       },
       {
         "pk": 10,
         "party__pk": 10,
         "party__code": "UFP",
         "party__title": "United Front Party",
-        "total_votes": 4852
+        "votes": 4852
       },
       {
         "pk": 11,
         "party__pk": 11,
         "party__code": "UPP", 
         "party__title": "United Progressive Party",
-        "total_votes": 4593
+        "votes": 4593
       },
       {
         "pk": 12,
         "party__pk": 12,
         "party__code": "PAP", 
         "party__title": "People's Action Party",
-        "total_votes": 84493
+        "votes": 84493
       },
       {
         "pk": 13,
         "party__pk": 13,
         "party__code": "LPG", 
         "party__title": "Liberal Party of Ghana",
-        "total_votes": 44880
+        "votes": 44880
       },
       {
         "pk": 14,
         "party__pk": 14,
         "party__code": "PNC", 
         "party__title": "People's National Convention",
-        "total_votes": 385
+        "votes": 385
       },
       {
         "pk": 15,
         "party__pk": 15,
         "party__code": "IND", 
         "party__title": "Independent",
-        "total_votes": 742
+        "votes": 742
       }
     ]
   }
@@ -319,105 +319,105 @@ const mockResultSheet = {
           "party__pk": 1,
           "party__code": "NDC",
           "party__title": "National Democratic Congress",
-          "total_votes": 45689
+          "votes": 45689
         },
         {
           "pk": 2,
           "party__pk": 2,
           "party__code": "NPP",
           "party__title": "New Patriotic Party",
-          "total_votes": 4583
+          "votes": 4583
         },
         {
           "pk": 3,
           "party__pk": 3,
           "party__code": "GUM",
           "party__title": "Ghana Union Movement",
-          "total_votes": 9695
+          "votes": 9695
         },
         {
           "pk": 4,
           "party__pk": 4,
           "party__code": "APC",
           "party__title": "All People's Congress",
-          "total_votes": 4583
+          "votes": 4583
         },
         {
           "pk": 5,
           "party__pk": 5,
           "party__code": "PPP", 
           "party__title": "Progressive People's Party",
-          "total_votes": 5849
+          "votes": 5849
         },
         {
           "pk": 6,
           "party__pk": 6,
           "party__code": "GPP", 
           "party__title": "Ghana Freedom Party",
-          "total_votes": 34594
+          "votes": 34594
         },
         {
           "pk": 7,
           "party__pk": 7,
           "party__code": "NDP", 
           "party__title": "National Democratic Party",
-          "total_votes": 245323
+          "votes": 245323
         },
         {
           "pk": 8,
           "party__pk": 8,
           "party__code": "CPP", 
           "party__title": "Convention People's Party",
-          "total_votes": 4069
+          "votes": 4069
         },
         {
           "pk": 9,
           "party__pk": 9,
           "party__code": "GCPP", 
           "party__title": "Great Consolidated Popular Party",
-          "total_votes": 59443
+          "votes": 59443
         },
         {
           "pk": 10,
           "party__pk": 10,
           "party__code": "UFP",
           "party__title": "United Front Party",
-          "total_votes": 45832
+          "votes": 45832
         },
         {
           "pk": 11,
           "party__pk": 11,
           "party__code": "UPP", 
           "party__title": "United Progressive Party",
-          "total_votes": 48593
+          "votes": 48593
         },
         {
           "pk": 12,
           "party__pk": 12,
           "party__code": "PAP", 
           "party__title": "People's Action Party",
-          "total_votes": 8493
+          "votes": 8493
         },
         {
           "pk": 13,
           "party__pk": 13,
           "party__code": "LPG", 
           "party__title": "Liberal Party of Ghana",
-          "total_votes": 34480
+          "votes": 34480
         },
         {
           "pk": 14,
           "party__pk": 14,
           "party__code": "PNC", 
           "party__title": "People's National Convention",
-          "total_votes": 485
+          "votes": 485
         },
         {
           "pk": 15,
           "party__pk": 15,
           "party__code": "IND", 
           "party__title": "Independent",
-          "total_votes": 74382
+          "votes": 74382
         }
     ]
   }
