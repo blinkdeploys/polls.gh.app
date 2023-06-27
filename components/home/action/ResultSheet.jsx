@@ -23,16 +23,24 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
   const [data, setData] = useState([]);
+  const [totalVotes, setTotalVotes] = useState(0)
   const post = usePost()
 
   useEffect(() => {
     const init = async () => {
       const initData = await fetchData(mode, user?.zone?.pk)
       setData(initData)
+      sumVotes()
     }
     init()
   }, [])
 
+
+  const sumVotes = () => {
+    let total = 0
+    data.map(m => total += Number(m?.votes || 0))
+    setTotalVotes(total)
+  }
 
   const handleSubmit = () => {
     const result = post.postData(mode, user?.zone?.pk, data)
@@ -58,6 +66,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
 
   const okOverlay = () => {
     data[modalCandidateId] = modalCandidate
+    sumVotes()
     setOverlayVisible(false);
   }
 
@@ -131,14 +140,11 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           <Text style={{
             ...styles.headerBtn,
             color: COLORS.white,
+            borderRadius: SIZES.large,
             fontWeight: 'bold',
           }}>Save Results</Text>
         </TouchableOpacity>
       </View>
-
-      <Spinner visible={post.isLoading} 
-                textContent={'Saving...'}
-                textStyle={{ color: '#FFF' }} />
 
       <View style={styles.cardsContainer}>
         <AgentActionCard 
@@ -148,6 +154,36 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           />
       </View>
 
+      <View style={styles.cardsContainer}>
+        <ResultSheetCard 
+          theme={{backgroundColor: '#ECD6D3'}}
+          key={`action-total-invalid-votes`}
+          row={{
+            pk: null,
+            party__code: 'Invalid Votes',
+            party__title: 'Invalid Votes',
+            candidate_name: 'Enter total invalid votes',
+            votes: 0,
+          }}
+          handleNavigate={() => {}}
+        />
+        <ResultSheetCard 
+          key={`action-total-votes`}
+          theme={{backgroundColor: '#D9F6AF'}}
+          row={{
+            pk: null,
+            party__code: 'Total Votes',
+            party__title: 'Total Votes',
+            candidate_name: 'Cumulative Total Votes',
+            votes: totalVotes,
+          }}
+          handleNavigate={null}
+        />
+      </View>
+
+      <Spinner visible={post.isLoading} 
+                textContent={'Saving...'}
+                textStyle={{ color: '#FFF' }} />
 
       <View style={styles.cardsContainer}>
         {isLoading ? (
@@ -157,14 +193,38 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
         ) : (
           data?.map((candidate, c) => (
             <ResultSheetCard 
-             job={candidate}
+             row={candidate}
              key={`action-${candidate?.pk}-${c}`}
-             /*handleNavigate={() => router.push(`/job-details/${candidate?.job_id}`)}*/
              handleNavigate={() => openOverlay(c)}
             />
           ))
         )}
       </View>
+
+      <View
+        style={{
+          marginVertical: 15,
+        }}
+      >
+        <TouchableOpacity
+          onPress={handleSubmit}
+          style={{
+            backgroundColor: '#000000',
+            padding: 15,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
+          }}
+        >
+          <Text style={{
+            ...styles.headerBtn,
+            color: COLORS.white,
+            borderRadius: SIZES.large,
+            fontWeight: 'bold',
+          }}>Save Results</Text>
+        </TouchableOpacity>
+      </View>      
 
       <Modal
         animationType="fade"
