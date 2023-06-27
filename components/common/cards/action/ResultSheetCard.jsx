@@ -7,10 +7,13 @@ import { AntDesign } from '@expo/vector-icons';
 import styles from './agentActionCard.style'
 
 
-const AgentActionCard = ({ job, handleNavigate }) => {
+const ResultSheetCard = ({ row, handleNavigate, theme }) => {
+  theme = theme || {}
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={{...styles.container,
+        ...theme
+      }}
       onPress={handleNavigate}
     >
       <View
@@ -19,10 +22,10 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         <Text
           style={styles.jobName}
           numberOfLines={1}
-        >{job?.party__code}</Text>
-        {(false && job?.party__title) ? <Text style={styles.jobType} >{job?.party__title}</Text> : null}
-        {(job?.candidate_name) ? <Text style={styles.jobType} >{job?.candidate_name}</Text> : null}
-        {(job?.pk) ? <Text style={styles.jobType} >#{job?.pk}</Text> : null}
+        >{row?.party__code}</Text>
+        {(false && row?.party__title) ? <Text style={styles.jobType} >{row?.party__title}</Text> : null}
+        {(row?.candidate_name) ? <Text style={styles.jobType} >{row?.candidate_name}</Text> : null}
+        {(row?.pk) ? <Text style={styles.jobType} >#{row?.pk}</Text> : null}
       </View>
       <TouchableOpacity
         style={styles.voteContainer}
@@ -31,8 +34,8 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         <Text
           style={styles.jobName}
           numberOfLines={1}
-        >{job?.votes > 0
-          ? job?.votes
+        >{(row?.votes > 0 || handleNavigate === null)
+          ? row?.votes
           : <AntDesign name="plus" size={24} color="black" />}
         </Text>
       </TouchableOpacity>
@@ -40,4 +43,4 @@ const AgentActionCard = ({ job, handleNavigate }) => {
   )
 }
 
-export default AgentActionCard
+export default ResultSheetCard
