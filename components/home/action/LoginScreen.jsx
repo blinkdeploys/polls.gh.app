@@ -11,6 +11,8 @@ import {
     saveAuthToken, saveCSRFToken, saveUserProfile,
     isValid
 } from '../../../utils'
+import { Ionicons } from '@expo/vector-icons';
+
 
 const LoginScreen = ({ onLogin, onFailure }) => {
   const [username, setUsername] = useState('eakatue');
@@ -18,7 +20,12 @@ const LoginScreen = ({ onLogin, onFailure }) => {
   const [loadingMessage, setLoadingMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { loading, error, login } = useLogin();
-  
+  const [passwordVisible, setPasswordVisible] = useState(false)
+ 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   const handleLogin = async () => {
     // Retrieving the user profile from async storage
     let data = await getUserProfile()
@@ -82,26 +89,40 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                     paddingHorizontal: 15,
                     borderRadius: SIZES.medium,
                     fontSize: SIZES.large,
+                    fontWeight: 'bold',
                     backgroundColor: COLORS.white,
                 }}
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
             />
-            <TextInput
-                style={{
-                    marginVertical: 7,
-                    paddingVertical: 12,
-                    paddingHorizontal: 15,
-                    borderRadius: SIZES.medium,
-                    fontSize: SIZES.large,
-                    backgroundColor: COLORS.white,
-                }}
-                placeholder="Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+            <View style={{ flexDirection: 'row', }}>
+                <TextInput
+                    style={{
+                        width: '85%',
+                        marginVertical: 7,
+                        paddingVertical: 12,
+                        paddingHorizontal: 15,
+                        borderRadius: SIZES.medium,
+                        fontSize: SIZES.large,
+                        fontWeight: 'bold',
+                        backgroundColor: COLORS.white,
+                    }}
+                    placeholder="Password"
+                    secureTextEntry={!passwordVisible}
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility}
+                    style={{ width: '15%', paddingHorizontal: 15, paddingVertical: 25, alignContent: 'center', }}
+                >
+                    <Ionicons
+                        name={passwordVisible ? 'eye-off' : 'eye'}
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
+            </View>
         </View>
         <TouchableOpacity
             onPress={handleLogin}
