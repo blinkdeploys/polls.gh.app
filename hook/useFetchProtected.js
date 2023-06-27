@@ -24,9 +24,10 @@ const useFetchProtected = () => {
             const response = await fetch(`${url}`, {
                                             'method': 'POST',
                                             'headers': {
+                                                'Content-Type': 'application/json',
                                                 'X-CSRFToken': csrfToken,
                                                 'Authorization': `Token ${token}`,
-                                                'Content-Type': 'application/json',
+                                                'Referer': `${URL_LOCALHOST}`,
                                             },
                                             'body': body,
                                         });

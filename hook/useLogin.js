@@ -21,7 +21,8 @@ const useLogin = () => {
                                         'method': 'POST',
                                         'headers': {
                                             'Content-Type': 'application/json',
-                                            'X-CSRFToken': csrfToken,
+                                            'Referer': `${URL_LOCALHOST}`,
+                                            'X-CSRFToken': `${csrfToken}`,
                                         },
                                         'body': body,
                                     });

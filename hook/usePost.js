@@ -41,6 +41,7 @@ const usePost = (query) => {
                                                 'X-CSRFToken': csrfToken,
                                                 'Authorization': `Token ${token}`,
                                                 'Content-Type': 'application/json',
+                                                'Referer': `${URL_LOCALHOST}`,
                                             },
                                             'body': body,
                                         });
@@ -50,11 +51,11 @@ const usePost = (query) => {
             const data = await response.json()
             console.log(data?.message?.detail);
             setMessage(data?.message?.detail)
-            setIsError(data?.message?.ok)
+            setIsError(!data?.message?.ok)
             return data;
         } catch (error) {
             console.log('There was an error saving result data. Network error')
-            setIsError(error)
+            setIsError(true)
             console.error(error);
         } finally {
             setIsLoading(false)
