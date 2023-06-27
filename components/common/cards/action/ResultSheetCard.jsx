@@ -22,6 +22,7 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         >{job?.party__code}</Text>
         {(false && job?.party__title) ? <Text style={styles.jobType} >{job?.party__title}</Text> : null}
         {(job?.candidate_name) ? <Text style={styles.jobType} >{job?.candidate_name}</Text> : null}
+        {(job?.pk) ? <Text style={styles.jobType} >#{job?.pk}</Text> : null}
       </View>
       <TouchableOpacity
         style={styles.voteContainer}
@@ -30,8 +31,8 @@ const AgentActionCard = ({ job, handleNavigate }) => {
         <Text
           style={styles.jobName}
           numberOfLines={1}
-        >{job.total_votes > 0
-          ? job.total_votes
+        >{job?.votes > 0
+          ? job?.votes
           : <AntDesign name="plus" size={24} color="black" />}
         </Text>
       </TouchableOpacity>
