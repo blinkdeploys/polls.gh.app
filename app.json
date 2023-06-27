@@ -5,6 +5,17 @@
       "bundler": "metro"
     },
     "name": "polls.gh",
-    "slug": "pollsgh"
+    "slug": "pollsgh",
+    "extra": {
+      "eas": {
+        "projectId": "f6cce464-6629-4f15-bd9c-599b61e80975"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.blinkdeploys.pollsghios"
+    },
+    "android": {
+      "package": "com.blinkdeploys.pollsghandroid"
+    }
   }
 }
