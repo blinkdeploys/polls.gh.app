@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useRouter } from 'expo-router'
-
-import styles from './agentActions.style'
-import { COLORS } from '../../../constants'
+import { AntDesign } from '@expo/vector-icons';
+import AppHeader from '../../common/header/AppHeader'
 import AgentActionCard from '../../common/cards/action/AgentActionCard'
 import useFetch from '../../../hook/useFetch'
-import { AntDesign } from '@expo/vector-icons';
+
+import { COLORS } from '../../../constants'
+import styles from './agentActions.style'
 
 const AgentActions = ({ user, selectMode }) => {
   const router = useRouter();
@@ -16,23 +17,7 @@ const AgentActions = ({ user, selectMode }) => {
 
   return (
     <View>
-      <View style={styles.header}>
-        <TouchableOpacity>
-          <Text style={styles.headerBtn}>
-            <AntDesign name="ellipsis1" size={24} color="black" />
-          </Text>
-        </TouchableOpacity>
-        <View>
-          <Text style={{
-            ...styles.headerTitle,
-            fontWeight: 'bold'
-          }}>{user.zone.station_code} {user.zone.station_title}</Text>
-          <Text style={{
-          }}>{user.zone.constituency_title} Constituency</Text>
-          <Text style={{
-          }}>{user.zone.region_title} Region</Text>
-        </View>
-      </View>
+      <AppHeader user={user} goHome={null} title={''} />
 
       <View style={styles.cardsContainer}>
         {isLoading ? (

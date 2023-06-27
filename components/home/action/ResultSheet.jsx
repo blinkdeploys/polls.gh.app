@@ -4,13 +4,17 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import { useRouter } from 'expo-router'
 
-import styles from './agentActions.style'
 import { COLORS, SIZES } from '../../../constants'
 import ResultSheetCard from '../../common/cards/action/ResultSheetCard'
 import AgentActionCard from '../../common/cards/action/AgentActionCard'
-import useFetch from '../../../hook/useFetch'
+import AppHeader from '../../common/header/AppHeader'
 import usePost from '../../../hook/usePost'
 import useFetchProtected from '../../../hook/useFetchProtected'
+import useFetch from '../../../hook/useFetch'
+import { AntDesign } from '@expo/vector-icons';
+
+import styles from './agentActions.style'
+
 
 const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const router = useRouter();
@@ -79,35 +83,12 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   return (
     <View>
 
-      <View
-        style={styles.header}
-      >
-        <TouchableOpacity
-          onPress={goHome}
-          style={{
-            backgroundColor: COLORS.white,
-            padding: 8,
-            borderRadius: 10,
-          }}
-        >
-          <Text style={{
-            ...styles.headerBtn,
-            color: '#000000',
-            fontWeight: 'bold',
-          }}>Back</Text>
-        </TouchableOpacity>
-        <View>
-            <Text style={styles.headerTitle}>{title}</Text>
-            <Text style={styles.headerMedium}>{user.zone.station_code} {user.zone.station_title}</Text>
-            <Text style={styles.headerMedium}>{user.zone.constituency_title} Constituency</Text>
-            <Text style={styles.headerMedium}>{user.zone.region_title} Region</Text>
-        </View>
-      </View>
+      <AppHeader user={user} goHome={goHome} title={title} />
 
       {post.message &&
       <View
         style={{
-          backgroundColor: COLORS.gray,
+          backgroundColor: (post.isError) ? '#ECD6D3' : '#D9F6AF',
           paddingHorizontal: 20,
           paddingVertical: 15,
           borderRadius: 5,
@@ -116,16 +97,14 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
       >
         <Text
           style={{
-            color: COLORS.white,
             fontSize: 17,
             fontWeight: 'bold',
             paddingHorizontal: 10,
             paddingBottom: 5,
           }}
-        >{(post.isError) ? 'Success' : 'Error'}</Text>
+        >{(post.isError) ? 'Error' : 'Success'}</Text>
         <Text
           style={{
-            color: COLORS.white,
             fontSize: 15,
             paddingHorizontal: 10,
             paddingTop: 5,
@@ -179,7 +158,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           data?.map((candidate, c) => (
             <ResultSheetCard 
              job={candidate}
-             key={`action-${candidate?.pk}`}
+             key={`action-${candidate?.pk}-${c}`}
              /*handleNavigate={() => router.push(`/job-details/${candidate?.job_id}`)}*/
              handleNavigate={() => openOverlay(c)}
             />
@@ -215,10 +194,10 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
                     fontWeight: 'bold',
                     ...styles.voteInput,
                   }}
-                  value={`${modalCandidate?.total_votes}`}
+                  value={`${modalCandidate?.votes}`}
                   onChangeText={(text) => setModalCandidate({
                     ...modalCandidate,
-                    total_votes: text,
+                    votes: text,
                   })}
                   placeholder="enter vote count"
                   keyboardType="numeric"
