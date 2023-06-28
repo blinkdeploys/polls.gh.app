@@ -7,6 +7,8 @@ import {
     // getCSRFToken, getUserProfile, saveAuthToken, saveCSRFToken, saveUserProfile
 } from '../utils'
 import useCsrfToken from './useCsrfToken'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const useFetchProtected = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -34,7 +36,8 @@ const useFetchProtected = () => {
             if (!response.ok) { throw new Error('Data fetch failed') }
             const data = await response.json()
             setIsLoading(false)
-            return data.data
+            await AsyncStorage.setItem(`${endpoint}_data`, JSON.stringify(data.data))
+            return data.data.sheet
         } catch (error) {
             // Handle error
             setIsError(true)
