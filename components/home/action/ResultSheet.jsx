@@ -10,8 +10,11 @@ import AgentActionCard from '../../common/cards/action/AgentActionCard'
 import AppHeader from '../../common/header/AppHeader'
 import usePost from '../../../hook/usePost'
 import useFetchProtected from '../../../hook/useFetchProtected'
+import ModalBox from './ModalBox'
 import useFetch from '../../../hook/useFetch'
 import { AntDesign } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './agentActions.style'
 
@@ -23,14 +26,30 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
   const [data, setData] = useState([]);
-  const [totalVotes, setTotalVotes] = useState(0)
+  const [resultSheet, setResultSheet] = useState({})
+  const [tmpValue, setTmpValue] = useState(0)
+  const [showModalInvalidVotes, setShowModalInvalidVotes] = useState(false)
+  const [showModalCandidate, setShowModalCandidate] = useState(false)
   const post = usePost()
+
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalDetail, setModalDetail] = useState('');
+  const [modalValue, setModalValue] = useState(0)
+  const [handleModalChange, setHandleModalChange] = useState(null);
+  const [modalOk, setModalOk] = useState(null);
+
 
   useEffect(() => {
     const init = async () => {
       const initData = await fetchData(mode, user?.zone?.pk)
-      setData(initData)
-      sumVotes()
+      let asyncData = await AsyncStorage.getItem(`${mode}_data`)
+      try {
+        asyncData = await JSON.parse(asyncData)
+      } catch (e) {
+      }
+      setResultSheet(asyncData?.result_sheet)
+      setData(asyncData?.sheet)
+      // sumVotes()
     }
     init()
   }, [])
@@ -39,7 +58,10 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const sumVotes = () => {
     let total = 0
     data.map(m => total += Number(m?.votes || 0))
-    setTotalVotes(total)
+    setResultSheet({
+      ...resultSheet,
+      total_votes: total
+    })
   }
 
   const handleSubmit = () => {
@@ -52,22 +74,26 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
 
   const closeOverlay = () => {
     setOverlayVisible(false);
+    setShowModalCandidate(false);
+    setShowModalInvalidVotes(false);
   }
 
   const openOverlay = (c=null) => {
     if (c === null || c == undefined) {
+      setShowModalCandidate(false);
       setOverlayVisible(false);
       return
     }
     setModalCandidateId(c);
     setModalCandidate(data[c]);
+    setShowModalCandidate(true);
     setOverlayVisible(true);
   }
 
   const okOverlay = () => {
     data[modalCandidateId] = modalCandidate
     sumVotes()
-    setOverlayVisible(false);
+    closeOverlay();
   }
 
   const task = {
@@ -87,6 +113,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
       setOverlayVisible(!overlayVisible);
     }
   };
+
 
 
   return (
@@ -151,34 +178,35 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           task={task}
           key={`action-upload-${task?.id}`}
           handleNavigate={() => selectMode(`${mode}_file`)}
+          icon={<Octicons name="file-zip" size={24} color="black" />}
           />
       </View>
 
       <View style={styles.cardsContainer}>
-        <ResultSheetCard 
+        <AgentActionCard 
+          task={{
+            title: "Invalid Votes",
+            detail: `Enter total invalid votes`,
+            path: mode,
+          }}
           theme={{backgroundColor: '#ECD6D3'}}
           key={`action-total-invalid-votes`}
-          row={{
-            pk: null,
-            party__code: 'Invalid Votes',
-            party__title: 'Invalid Votes',
-            candidate_name: 'Enter total invalid votes',
-            votes: 0,
+          handleNavigate={() => {
+            setTmpValue(resultSheet?.total_invalid_votes)
+            setShowModalInvalidVotes(true)
           }}
-          handleNavigate={() => {}}
-        />
-        <ResultSheetCard 
+          icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_invalid_votes || 0}</Text>}
+          />
+        <AgentActionCard 
+          task={{
+            title: "Total Votes",
+            detail: `Cumulative Total Votes`,
+            path: mode,
+          }}
           key={`action-total-votes`}
           theme={{backgroundColor: '#D9F6AF'}}
-          row={{
-            pk: null,
-            party__code: 'Total Votes',
-            party__title: 'Total Votes',
-            candidate_name: 'Cumulative Total Votes',
-            votes: totalVotes,
-          }}
-          handleNavigate={null}
-        />
+          icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_votes}</Text>}
+          />
       </View>
 
       <Spinner visible={post.isLoading} 
@@ -226,94 +254,40 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
         </TouchableOpacity>
       </View>      
 
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={overlayVisible}
-        onRequestClose={closeOverlay}
-      >
-        <View style={styles.overlay}>
-          <View style={styles.overlayContent}>
-            <Text style={{
-              ...styles.headerTitle,
-              fontSize: SIZES.large,
-              fontWeight: "bold",
-              marginBottom: 10,
-            }}>Poll Result</Text>
+      {showModalInvalidVotes && <ModalBox
+        title={'Invalid Vote Count'}
+        detail={'Enter total number Invalid Votes for this station'}
+        value={`${tmpValue}`}
+        handleCancel={closeOverlay}
+        handleOk={() => {
+          if (tmpValue) {
+            setResultSheet({
+              ...resultSheet,
+              total_invalid_votes: tmpValue || 0,
+            })
+            // setTmpValue(null)
+          }
+          closeOverlay()
+        }}
+        handleChange={(text) => {
+          setTmpValue(text)
+        }}
+      />}
 
-            <Text style={{
-              ...styles.overlayText,
-              marginBottom: 5,
-              fontSize: SIZES.large,
-            }}>Enter the {modalCandidate?.party__code} Candidate's vote count</Text>
+      {showModalCandidate && <ModalBox
+        title={'Poll Result'}
+        detail={`Enter the ${modalCandidate?.party__code} Candidate's vote count`}
+        value={`${modalCandidate?.votes}`}
+        handleOk={okOverlay}
+        handleCancel={closeOverlay}
+        handleChange={(text) => {
+          setModalCandidate({
+            ...modalCandidate,
+            votes: text,
+          })
+        }}
+      />}
 
-            <View style={styles.voteInputContainer}>
-              <View style={styles.voteInputWrapper}>
-                <TextInput
-                  style={{
-                    fontWeight: 'bold',
-                    ...styles.voteInput,
-                  }}
-                  value={`${modalCandidate?.votes}`}
-                  onChangeText={(text) => setModalCandidate({
-                    ...modalCandidate,
-                    votes: text,
-                  })}
-                  placeholder="enter vote count"
-                  keyboardType="numeric"
-                  />
-              </View>
-            </View>
-
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-                marginTop: SIZES.large,
-                height: 50,
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 1,
-                  margin: 0,
-                  justifyContent: "center",
-                  alignItems: 'center',
-                }}
-                onPress={closeOverlay}
-              >
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    width: "auto",
-                  }}
-                >Close</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 1,
-                  margin: 0,
-                  justifyContent: "center",
-                  alignItems: 'center',
-                }}
-                onPress={okOverlay}
-              >
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    width: "auto",
-                  }}
-                >Ok</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
     </View>
   )
