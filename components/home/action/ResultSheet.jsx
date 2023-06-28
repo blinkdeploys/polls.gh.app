@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Modal, TextInput, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { useRouter } from 'expo-router'
@@ -11,8 +11,6 @@ import AppHeader from '../../common/header/AppHeader'
 import usePost from '../../../hook/usePost'
 import useFetchProtected from '../../../hook/useFetchProtected'
 import ModalBox from './ModalBox'
-import useFetch from '../../../hook/useFetch'
-import { AntDesign } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,7 +20,6 @@ import styles from './agentActions.style'
 const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const router = useRouter();
   const { fetchData, isLoading, isError } = useFetchProtected()
-  const [overlayVisible, setOverlayVisible] = useState(false);
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
   const [data, setData] = useState([]);
@@ -31,13 +28,6 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const [showModalInvalidVotes, setShowModalInvalidVotes] = useState(false)
   const [showModalCandidate, setShowModalCandidate] = useState(false)
   const post = usePost()
-
-  const [modalTitle, setModalTitle] = useState('');
-  const [modalDetail, setModalDetail] = useState('');
-  const [modalValue, setModalValue] = useState(0)
-  const [handleModalChange, setHandleModalChange] = useState(null);
-  const [modalOk, setModalOk] = useState(null);
-
 
   useEffect(() => {
     const init = async () => {
@@ -101,18 +91,6 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
     detail: `Upload EC Summary Sheet for ${title}`,
     path: mode,
   }
-
-  const toggleOverlay = (c=null) => {
-    if (c === null || c == undefined) {
-      setOverlayVisible(false);
-      return
-    }
-    if (data === null || data == undefined) return
-    if (data[c]) {
-      setModalCandidate(data[c]);
-      setOverlayVisible(!overlayVisible);
-    }
-  };
 
 
 
