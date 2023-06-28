@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useLogin from '../../../hook/useLogin';
@@ -62,10 +61,11 @@ const LoginScreen = ({ onLogin, onFailure }) => {
     >
         <Text
             style={{
-                fontSize: SIZES.large,
+                fontSize: 30,
+                fontWeight: 'bold',
                 padding: 8,
             }}
-        >Login</Text>
+        >Log In</Text>
         <View
             style={{
                 marginVertical: 25,
@@ -89,7 +89,6 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                     paddingHorizontal: 15,
                     borderRadius: SIZES.medium,
                     fontSize: SIZES.large,
-                    fontWeight: 'bold',
                     backgroundColor: COLORS.white,
                 }}
                 placeholder="Username"
@@ -105,7 +104,6 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                         paddingHorizontal: 15,
                         borderRadius: SIZES.medium,
                         fontSize: SIZES.large,
-                        fontWeight: 'bold',
                         backgroundColor: COLORS.white,
                     }}
                     placeholder="Password"
@@ -123,6 +121,14 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                     />
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity>
+                <Text
+                    style={{
+                        padding: 8,
+                        fontSize: SIZES.large,
+                    }}
+                >forgot password?</Text>
+            </TouchableOpacity>
         </View>
         <TouchableOpacity
             onPress={handleLogin}
@@ -130,7 +136,7 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                 backgroundColor: '#000000',
                 padding: 10,
                 margin: 10,
-                borderRadius: 10,
+                borderRadius: SIZES.large,
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
@@ -142,7 +148,7 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                     fontWeight: 'bold',
                     fontSize: 20,
                 }}
-            >Login</Text>
+            >Log In</Text>
         </TouchableOpacity>
     </View>
   );

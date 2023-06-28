@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: COLORS.white,
     borderRadius: SIZES.medium,
+    fontSize: SIZES.medium,
+    fontWeight: 'bold',
     justifyContent: "center",
     alignItems: "center",
   },

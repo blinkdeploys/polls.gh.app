@@ -8,10 +8,10 @@ import { Feather } from '@expo/vector-icons';
 import styles from './agentActionCard.style'
 
 
-const AgentActionCard = ({ task, handleNavigate }) => {
+const AgentActionCard = ({ task, theme, icon, handleNavigate }) => {
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={{ ...styles.container, ...theme }}
       onPress={handleNavigate}
     >
       <TouchableOpacity
@@ -21,7 +21,7 @@ const AgentActionCard = ({ task, handleNavigate }) => {
         ? ((task?.done === true)
             ? <AntDesign name="check" size={24} color="black" />
             : <Feather name="square" size={24} color="black" />)
-        : <AntDesign name="ellipsis1" size={24} color="black" />}
+        : (icon ? icon : <AntDesign name="ellipsis1" size={24} color="black" />)}
       </TouchableOpacity>
       <View
         style={styles.textContainer}

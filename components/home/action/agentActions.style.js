@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: SIZES.large,
     fontFamily: FONT.medium,
+    fontWeight: 'bold',
     color: COLORS.primary,
   },
   headerMedium: {

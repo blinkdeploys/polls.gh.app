@@ -28,10 +28,9 @@ const AppHeader = ({ user, goHome, title }) => {
             paddingBottom: 20,
         }}
         >
-        <Text style={styles.headerTitle}>{title}</Text>
+        <Text style={{...styles.headerTitle, paddingBottom: 10 }}>{title}</Text>
         <Text style={styles.headerMedium}>{user.zone.station_code} {user.zone.station_title}</Text>
-        <Text style={styles.headerMedium}>{user.zone.constituency_title} Constituency</Text>
-        <Text style={styles.headerMedium}>{user.zone.region_title} Region</Text>
+        <Text style={styles.headerMedium}>{user.zone.constituency_title}, {user.zone.region_title} Region</Text>
         </View>
     </View>)
 }
