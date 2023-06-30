@@ -119,7 +119,7 @@ const ECSummary = ({ title, mode, user, goHome }) => {
 
         if (savedFilePath) {
           const resultSheetData = await getResultSheetData(mode)
-          if (savedFilePath !== data?.result_sheet?.result_sheet) {
+          if (savedFilePath !== resultSheetData?.result_sheet) {
             await saveResultSheetData(mode, JSON.stringify({
               ...resultSheetData,
               result_sheet: savedFilePath,
