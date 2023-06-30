@@ -1,8 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const TOKEN_KEY = 'auth_token';
-const CSRF_TOKEN_KEY = 'csrf_token';
-const PROFILE = 'user_profile';
+import { ASKEY_TOKEN, ASKEY_CSRF_TOKEN, ASKEY_PROFILE, ASKEY_URL } from '../constants'
 
 
 export const isValid = (token) => {
@@ -40,87 +37,104 @@ export const getAsync = async (token) => {
     }
 }
 
-
-export const saveAuthToken = async (token) => {
-    try {
-        await AsyncStorage.setItem(TOKEN_KEY, token);
-    } catch (error) {
-        // Handle error
-    }
-};
-
-export const getAuthToken = async () => {
-    try {
-        const token = await AsyncStorage.getItem(TOKEN_KEY);
-        return token;
-    } catch (error) {
-        // Handle error
-        return null;
-    }
-};
-
-export const removeAuthToken = async () => {
-    try {
-        await AsyncStorage.removeItem(TOKEN_KEY);
-    } catch (error) {
-        // Handle error
-    }
-};
-
-export const saveCSRFToken = async (token) => {
-    try {
-        await AsyncStorage.setItem(CSRF_TOKEN_KEY, token);
-    } catch (error) {
-        // Handle error
-    }
-};
-
-export const getCSRFToken = async () => {
-    try {
-        const token = await AsyncStorage.getItem(CSRF_TOKEN_KEY);
-        return token;
-    } catch (error) {
-        // Handle error
-        return null;
-    }
-};
-
-export const removeCSRFToken = async () => {
-    try {
-        await AsyncStorage.removeItem(CSRF_TOKEN_KEY);
-    } catch (error) {
-        // Handle error
-    }
-};
-
-export const saveUserProfile = async (data) => {
+export const saveASData = async (askey, data) => {
     try {
         if (typeof data === 'object') {
             data = JSON.stringify(data)
         }
-        await AsyncStorage.setItem(PROFILE, data);
+        await AsyncStorage.setItem(askey, data);
     } catch (error) {
         // Handle error
+        console.log(error)
     }
 };
 
-export const getUserProfile = async () => {
+export const getASData = async (askey, parse=false) => {
     try {
-        let data = await AsyncStorage.getItem(PROFILE);
-        return JSON.parse(data);
+        let data = await AsyncStorage.getItem(askey);
+        return parse ? JSON.parse(data) : data;
     } catch (error) {
         // Handle error
+        print(error)
         return null;
     }
 };
 
-export const removeUserProfile = async () => {
+export const removeASData = async (askey) => {
     try {
-        await AsyncStorage.removeItem(PROFILE);
+        await AsyncStorage.removeItem(askey);
     } catch (error) {
         // Handle error
     }
 };
+
+
+
+export const saveApiUrl = async (data) => {
+    await saveASData(ASKEY_URL, data)
+}
+export const getApiUrl = async () => {
+    const data = await getASData(ASKEY_URL, false)
+    return data
+}
+export const removeApiUrl = async () => {
+    await removeASData(ASKEY_URL)
+}
+
+export const saveUserProfile = async (data) => {
+    await saveASData(ASKEY_PROFILE, data)
+}
+export const getUserProfile = async () => {
+    const data = await getASData(ASKEY_PROFILE, true)
+    return data
+}
+export const removeUserProfile = async () => {
+    await removeASData(ASKEY_PROFILE)
+}
+
+
+export const saveAuthToken = async (data) => {
+    await saveASData(ASKEY_TOKEN, data)
+}
+export const getAuthToken = async () => {
+    const data = await getASData(ASKEY_TOKEN, false)
+    return data
+}
+export const removeAuthToken = async () => {
+    await removeASData(ASKEY_TOKEN)
+}
+
+
+export const saveCSRFToken = async (data) => {
+    await saveASData(ASKEY_CSRF_TOKEN, data)
+}
+export const getCSRFToken = async () => {
+    const data = await getASData(ASKEY_CSRF_TOKEN, false)
+    return data
+}
+export const removeCSRFToken = async () => {
+    await removeASData(ASKEY_CSRF_TOKEN)
+}
+
+
+export const saveResultData = async (askey, data) => {
+    if (askey) {
+        await saveASData(`${askey}_data`, data)
+    }
+}
+export const getResultData = async (askey) => {
+    if (askey) {
+        const data = await getASData(`${askey}_data`, false)
+        return data
+    }
+    return null
+}
+export const removeResultData = async (askey) => {
+    if (askey) {
+        await removeASData(`${askey}_data`)
+    }
+}
+
 
 
 export const handleHttpError = async = (code, prepend='', append='') => {
