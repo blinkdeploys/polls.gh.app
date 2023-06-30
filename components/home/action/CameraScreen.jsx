@@ -32,7 +32,6 @@ const CameraScreen = ({
       setIsLoading(true)
       const photo = await cameraRef.takePictureAsync();
       const file = makeFile(photo)
-      console.log(file)
       setFile(file)
       setFilePath(file?.name)
       setIsLoading(false)

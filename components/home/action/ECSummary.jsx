@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, TouchableOpacity, Text, Alert, Image } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios'
 import CameraScreen from './CameraScreen.jsx'
 import styles from './agentActions.style'
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../../constants'
-import { URL_LOCALHOST } from '../../../hook/constants'; 
+import { URL_BASE, URL_API } from '../../../hook/constants'; 
 import { getAuthToken, getCSRFToken } from '../../../utils'
 import useCsrfToken from '../../../hook/useCsrfToken'
 import mime from "mime";
 import * as ImagePicker from 'expo-image-picker'
 import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ECSummary = ({ title, mode, user, goHome }) => {
@@ -21,18 +22,23 @@ const ECSummary = ({ title, mode, user, goHome }) => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadStatusMessage, setUploadStatusMessage] = useState(false)
   const [uploadStatusIcon, setUploadStatusIcon] = useState('ellipsis1')
-  // const { getCsrfToken } = useCsrfToken()
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [savedImage, setSavedImage] = useState(null)
+  const [showResultSheet, setShowResultSheet] = useState(false)
+  const { getCsrfToken } = useCsrfToken()
 
-  useEffect(() => {
-    console.log(`file path changed... ${filePath}`)
-  }, [filePath])
 
-  useEffect(() => {
-    console.log(`file object changed...`, fileObject)
-  }, [fileObject])
-
+  const savedFileKey = `${mode}_result_sheet`
   let modeTitle = mode.replace('_sheet', '')
   modeTitle = modeTitle[0].toUpperCase() + modeTitle.slice(1,)
+
+  useEffect(() => {
+    const initSavedImage = async () => {
+      const file = await AsyncStorage.getItem(savedFileKey)
+      setSavedImage(file)
+    }
+    initSavedImage()
+  }, [])
 
   const handleUnsetFile = async () => {
     setFilePath(false)
@@ -59,19 +65,22 @@ const ECSummary = ({ title, mode, user, goHome }) => {
       base64: true,
       aspect: [4, 3]
     })
-    const file = allFiles.assets[0]
-    const trimmedURI = (Platform.OS === "android") ? file.uri : file.uri.replace("file://", "");
-    const fileName = trimmedURI.split("/").pop();
-    const mimeType = mime.getType(trimmedURI)
-    const selectedFile = {
-      name: fileName,
-      uri: trimmedURI,
-      type: mimeType,
-      height: file.height,
-      width: file.width,
+    if (!allFiles.canceled) {
+      const file = allFiles.assets[0]
+      setSelectedImage(file.uri);
+      const trimmedURI = (Platform.OS === "android") ? file.uri : file.uri.replace("file://", "");
+      const fileName = trimmedURI.split("/").pop();
+      const mimeType = mime.getType(trimmedURI)
+      const selectedFile = {
+        name: fileName,
+        uri: trimmedURI,
+        type: mimeType,
+        height: file.height,
+        width: file.width,
+      }
+      setFilePath(selectedFile?.name)
+      setFileObject(selectedFile)
     }
-    setFilePath(selectedFile?.name)
-    setFileObject(selectedFile)
   }
 
   const handleFileUpload = async () => {
@@ -79,9 +88,12 @@ const ECSummary = ({ title, mode, user, goHome }) => {
     let alertMessage = ''
     setIsUploading(true)
     setUploadStatusMessage(`Uploading ${modeTitle} EC Summary Sheet...`)
-    
+
+    const token = getAuthToken()
+    const csrfToken = getCsrfToken()
+
     try {
-      const url = `${URL_LOCALHOST}upload/`;
+      const url = `${URL_API}/upload/`;
       const formData = new FormData();
       formData.append('path', fileObject);
       formData.append('title', filePath);
@@ -90,14 +102,18 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         headers: {
           Accept: '*/*',
           'Content-Type': 'multipart/form-data',
-          'Referer': `${URL_LOCALHOST}`,
-          // 'X-CSRFToken': csrfToken,
-          // 'Authorization': `Token ${token}`,
+          'Referer': `${URL_API}/`,
+          'X-CSRFToken': csrfToken,
+          'Authorization': `Token ${token}`,
         },
       });
       if (response.data.ok) {
         alertStatus = 'Success'
         alertMessage = `${modeTitle} Result Sheet uploaded successfully`
+        const savedFilePath = `${URL_BASE}${response.data.file_path}`
+        console.log(savedFileKey)
+        await AsyncStorage.setItem(savedFileKey, savedFilePath)
+        setSavedImage(savedFilePath)
         setUploadStatusMessage(alertMessage)
         setUploadStatusIcon('checksquareo')
         if (showCamera) { setShowCamera(false) }
@@ -105,11 +121,13 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         alertStatus = 'Error'
         alertMessage = `Failed to upload ${modeTitle} Result Sheet`
         setUploadStatusMessage(alertMessage)
+        setUploadStatusIcon('exclamationcircleo')
       }
       Alert.alert(alertStatus, alertMessage);
     } catch (error) {
       alertMessage = 'Failed to upload file'
       setUploadStatusMessage(alertMessage)
+      setUploadStatusIcon('exclamationcircleo')
       console.log(alertMessage);
       console.error(error);
     }
@@ -157,7 +175,7 @@ const ECSummary = ({ title, mode, user, goHome }) => {
       </View>
 
       {/* Instructions */}
-      {!showCamera
+      {!(showCamera || filePath)
         && <View
           style={{
             padding: 10,
@@ -182,89 +200,75 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         unsetFile={handleUnsetFile}
         />}
 
+      {savedImage && (<Image
+                        source={{ uri: savedImage }}
+                        style={{ width: '100%', minHeight: 250, }}
+                        />)}
+
       {/* File Preview */}
       {filePath && <View style={{
               marginBottom: 40,
       }}>
         <View
-          style={{
-            ...styles.header,
-            flexDirection: 'row',
-          }}
-        >
-          <TouchableOpacity
-            onPress={goHome}
-            style={{
-              width: '20%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: 20,
-              borderRadius: 10,
-            }}
-          >
-            <AntDesign name="ellipsis1" size={24} color="black" />
-          </TouchableOpacity>
-          <View style={{
-            width: '80%',
-          }}>
-            <Text style={{fontSize: 18, marginVertical: 10, fontWeight: 'bold', }}>{modeTitle} Selected</Text>
-          </View>
-        </View>
-        <View
           style={{ marginHorizontal: SIZES.large,
             marginBottom: 20,
-            padding: 15,
-            backgroundColor: COLORS.success,
           }}
         >
-          <Text style={{fontSize: 18, marginVertical: 2, }}>File Name:</Text>
-          <Text style={{fontSize: 18, marginVertical: 5, fontWeight: 'bold', }}>{filePath}</Text>
+          {/*<Text style={{fontSize: 18, marginVertical: 2, }}>File Name:</Text>
+          <Text style={{fontSize: 18, marginVertical: 5, fontWeight: 'bold', }}>{filePath}</Text>*/}
           <Text style={{fontSize: 18, marginVertical: 15, }}>Would you like to upload this file?</Text>
+          {selectedImage && (
+            <Image
+              source={{ uri: selectedImage }}
+              style={{ width: '100%', minHeight: 300, }}
+            />
+          )}
         </View>
-        <TouchableOpacity
-            onPress={handleFileUpload}
-            style={{
-              backgroundColor: '#000000',
-              padding: 10,
-              margin: 10,
-              borderRadius: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text
-              style={{
-                ...styles.headerBtn,
-                color: COLORS.white,
-                fontWeight: 'bold',
-                flex: 1,
-                fontSize: 20,
-              }}
-            >Yes, Upload file</Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={handleUnsetFile}
+        <TouchableOpacity
+          onPress={handleFileUpload}
+          style={{
+            backgroundColor: '#000000',
+            padding: 10,
+            margin: 10,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text
             style={{
-              backgroundColor: COLORS.white,
-              padding: 10,
-              marginHorizontal: 10,
-              marginVertical: 20,
-              borderRadius: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
+              ...styles.headerBtn,
+              color: COLORS.white,
+              fontWeight: 'bold',
+              flex: 1,
+              fontSize: 20,
             }}
-          >
-            <Text
-              style={{
-                ...styles.headerBtn,
-                color: '#000000',
-                fontWeight: 'bold',
-                flex: 1,
-                fontSize: 20,
-              }}
-            >No, Select new file</Text>
-          </TouchableOpacity>
+          >Yes, Upload file</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleUnsetFile}
+          style={{
+            backgroundColor: COLORS.white,
+            padding: 10,
+            marginHorizontal: 10,
+            marginVertical: 20,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{
+              ...styles.headerBtn,
+              color: '#000000',
+              fontWeight: 'bold',
+              flex: 1,
+              fontSize: 20,
+            }}
+          >No, Select new file</Text>
+        </TouchableOpacity>
 
       </View>}
 
@@ -276,7 +280,7 @@ const ECSummary = ({ title, mode, user, goHome }) => {
           flexDirection: 'row',
           marginVertical: 10,
           paddingVertical: 20,
-          backgroundColor: COLORS.success,
+          backgroundColor: (uploadStatusIcon === 'exclamationcircleo') ? COLORS.error : COLORS.success,
         }}
       >
         <TouchableOpacity
@@ -302,6 +306,28 @@ const ECSummary = ({ title, mode, user, goHome }) => {
       
       {/* Controls */}
       {!(filePath || showCamera) && <View>
+        {/*<TouchableOpacity
+            onPress={() => setShowResultSheet(true)}
+            style={{
+              backgroundColor: '#000000',
+              margin: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 15,
+              borderRadius: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+          <Text
+            style={{
+              ...styles.headerBtn,
+              color: COLORS.white,
+              fontWeight: 'bold',
+              flex: 1,
+              fontSize: 20,
+            }}
+          >Preview Result Sheet</Text>
+        </TouchableOpacity>*/}
         <TouchableOpacity
             onPress={() => setShowCamera(true)}
             style={{
