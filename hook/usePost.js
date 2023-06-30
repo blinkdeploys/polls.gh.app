@@ -18,7 +18,7 @@ const usePost = (query) => {
         }, 20000)
     }, [message])
 
-    const postData = async (endpoint, station, results) => {
+    const postData = async (endpoint, station, results, resultSheet) => {
         endpoint = endpoint.split('_')[0]
         if (endpoint.length <= 0) {
             console.log('There was an error saving result data. Missing URL')
@@ -29,7 +29,8 @@ const usePost = (query) => {
         setIsLoading(true)
         const body = JSON.stringify({
             station: station,
-            results: results
+            results: results,
+            result_sheet: resultSheet,
         })
         const token = await getAuthToken()
         try {
