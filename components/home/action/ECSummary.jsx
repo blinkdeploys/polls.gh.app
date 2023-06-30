@@ -25,7 +25,22 @@ const ECSummary = ({ title, mode, user, goHome }) => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [savedImage, setSavedImage] = useState(null)
   const [showResultSheet, setShowResultSheet] = useState(false)
+  const [resultSheet, setResultSheet] = useState({})
   const { getCsrfToken } = useCsrfToken()
+
+  useEffect(() => {
+    init = async () => {
+      let data = {}
+      const sheet = await AsyncStorage.getItem(`${mode}_data`)
+      try {
+        data = await JSON.parse(sheet)
+        setResultSheet(data?.result_sheet)
+      } catch(e) {
+        console.log(e)
+      }
+    }
+    init()
+  }, [])
 
 
   const savedFileKey = `${mode}_result_sheet`
@@ -97,7 +112,8 @@ const ECSummary = ({ title, mode, user, goHome }) => {
       const formData = new FormData();
       formData.append('path', fileObject);
       formData.append('title', filePath);
-      formData.append('purpose', mode)
+      formData.append('purpose', 'result_sheet')
+      formData.append('pk', resultSheet?.pk)
       const response = await axios.post(url, formData, {
         headers: {
           Accept: '*/*',
@@ -111,7 +127,6 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         alertStatus = 'Success'
         alertMessage = `${modeTitle} Result Sheet uploaded successfully`
         const savedFilePath = `${URL_BASE}${response.data.file_path}`
-        console.log(savedFileKey)
         await AsyncStorage.setItem(savedFileKey, savedFilePath)
         setSavedImage(savedFilePath)
         setUploadStatusMessage(alertMessage)
@@ -201,7 +216,7 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         />}
 
       {/* Saved File Preview */}
-      {savedImage && (<Image
+      {!filePath && savedImage && (<Image
                         source={{ uri: savedImage }}
                         style={{ width: '100%', minHeight: 250, }}
                         />)}

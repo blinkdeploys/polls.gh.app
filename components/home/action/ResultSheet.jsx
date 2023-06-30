@@ -29,6 +29,16 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const [showModalCandidate, setShowModalCandidate] = useState(false)
   const post = usePost()
 
+  const hasResultSheet = () => {
+    const sheet = `${resultSheet?.result_sheet}`
+    if (sheet) {
+      if (sheet?.length > 0) {
+        return true
+      }
+    }
+    return false
+  }
+
   useEffect(() => {
     const init = async () => {
       await fetchData(mode, user?.zone?.pk)
@@ -129,7 +139,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           <AgentActionCard 
             task={{
               title: "EC Summary Sheet",
-              detail: `Upload EC Summary Sheet for ${title}`,
+              detail: (hasResultSheet()) ? `Preview EC Summary Sheet for ${title}` : `Upload EC Summary Sheet for ${title}`,
               path: mode,
             }}
             key={`action-upload-ec-summary-sheet`}
