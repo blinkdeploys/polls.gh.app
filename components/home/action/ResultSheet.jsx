@@ -10,8 +10,7 @@ import usePost from '../../../hook/usePost'
 import useFetchProtected from '../../../hook/useFetchProtected'
 import ModalBox from './ModalBox'
 import { Octicons } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
+import { getResultData, getResultSheetData, saveResultData, saveResultSheetData } from '../../../utils';
 
 import styles from './agentActions.style'
 
@@ -22,7 +21,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const { fetchData, isLoading, isError } = useFetchProtected()
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
-  const [data, setData] = useState([]);
+  const [results, setResults] = useState([]);
   const [resultSheet, setResultSheet] = useState(null)
   const [tmpValue, setTmpValue] = useState(0)
   const [showModalInvalidVotes, setShowModalInvalidVotes] = useState(false)
@@ -41,15 +40,18 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
 
   useEffect(() => {
     const init = async () => {
-      await fetchData(mode, user?.zone?.pk)
-      let asyncData = await AsyncStorage.getItem(`${mode}_data`)
-      try {
-        asyncData = await JSON.parse(asyncData)
-        setResultSheet(asyncData?.result_sheet)
-        setData(asyncData?.sheet)
-        // sumVotes()
-      } catch (e) {
+      let asyncResultData = await getResultData(mode)
+      let asyncResultSheetData = await getResultSheetData(mode)
+      if (!asyncResultData) {
+        const data = await fetchData(mode, user?.zone?.pk)
+        asyncResultData = data?.results
+        asyncResultSheetData = data?.result_sheet
+        await saveResultData(mode, asyncResultData)
+        await saveResultSheetData(mode, asyncResultSheetData)
       }
+      setResults(asyncResultData)
+      setResultSheet(asyncResultSheetData)
+      // sumVotes()
     }
     init()
   }, [])
@@ -57,7 +59,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
 
   const sumVotes = () => {
     let total = 0
-    data.map(m => total += Number(m?.votes || 0))
+    results.map(m => total += Number(m?.votes || 0))
     setResultSheet({
       ...resultSheet,
       total_votes: total || 0
@@ -65,7 +67,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   }
 
   const handleSubmit = async () => {
-    const result = await post.postData(mode, user?.zone?.pk, data, resultSheet)
+    const result = await post.postData(mode, user?.zone?.pk, results, resultSheet)
     // scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   }
 
@@ -81,18 +83,16 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
     }
     setModalCandidateId(c);
     setModalCandidate({
-      ...data[c],
-      votes: data[c].votes || 0,
+      ...results[c],
+      votes: results[c].votes || 0,
     });
     setShowModalCandidate(true);
   }
 
   const okOverlay = async () => {
-    data[modalCandidateId] = modalCandidate
-    await AsyncStorage.setItem(`${mode}_data`, JSON.stringify({
-      'result_sheet': resultSheet,
-      'sheet': data,
-    }))
+    results[modalCandidateId] = modalCandidate
+    await saveResultSheetData(mode, resultSheet)
+    await saveResultData(mode, results)
     sumVotes()
     closeOverlay();
   }
@@ -135,6 +135,10 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           >{post?.message}</Text>
         </View>}
 
+        {((isLoading || results.length <= 0) && !isError) && <ActivityIndicator size="large" colors={COLORS.primary} />}
+
+        {!isLoading && isError && <Text>Something went wrong</Text>}
+
         {!isLoading && resultSheet && <View style={styles.cardsContainer}>
           <AgentActionCard 
             task={{
@@ -148,7 +152,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
             />
         </View>}
 
-        <View style={styles.cardsContainer}>
+        {!isLoading && resultSheet && <View style={styles.cardsContainer}>
           {!isLoading && <AgentActionCard
             task={{
               title: "Invalid Votes",
@@ -173,19 +177,15 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
             theme={{backgroundColor: '#D9F6AF'}}
             icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_votes || 0}</Text>}
             />}
-        </View>
+        </View>}
 
         <Spinner visible={post.isLoading} 
                   textContent={'Saving...'}
                   textStyle={{ color: '#FFF' }} />
 
         <View style={styles.cardsContainer}>
-          {isLoading ? (
-            <ActivityIndicator size="large" colors={COLORS.primary} />
-          ) : isError ? (
-            <Text>Something went wrong</Text>
-          ) : (
-            data?.map((candidate, c) => (
+          {!isLoading && !isError && results?.length > 0 && (
+            results?.map((candidate, c) => (
               <ResultSheetCard 
               row={candidate}
               key={`action-${candidate?.pk}-${c}`}
@@ -224,10 +224,10 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           >{post?.message}</Text>
         </View>}
 
-        <View
+        {!isLoading && !isError && results?.length > 0 && <View
           style={inStyles.footer}
         >
-          {!isLoading && <TouchableOpacity
+          <TouchableOpacity
             onPress={handleSubmit}
             style={{
               backgroundColor: '#000000',
@@ -245,8 +245,8 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
               fontWeight: 'bold',
               fontSize: 20,
             }}>Save Results</Text>
-          </TouchableOpacity>}
-        </View>
+          </TouchableOpacity>
+        </View>}
 
       </ScrollView>
 
