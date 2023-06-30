@@ -59,10 +59,6 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
     // scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   }
 
-  const setCandidate = (candidate={}) => {
-    setModalCandidate(candidate);
-  };
-
   const closeOverlay = () => {
     setShowModalCandidate(false);
     setShowModalInvalidVotes(false);
