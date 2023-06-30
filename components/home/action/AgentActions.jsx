@@ -12,7 +12,7 @@ import styles from './agentActions.style'
 const AgentActions = ({ user, selectMode }) => {
   const router = useRouter();
   const { data, isLoading, isError } = useFetch(
-    'nav', { query: 'React Developer', page: 1, num_pages: 1 }
+    'nav', user, { query: 'React Developer', page: 1, num_pages: 1 }
   )
 
   return (
