@@ -3,8 +3,8 @@ import icons from "./icons";
 import { COLORS, FONT, SIZES, SHADOWS } from "./theme";
 
 // 'http://127.0.0.1:50002', 'https://www.localhost.architect.sh'
-const URL_BASE = 'https://app.blinkdeploys-env.blinkdeploys.arc.domains'
-// const URL_BASE = 'http://10.0.0.100:50002'
+// const URL_BASE = 'https://app.blinkdeploys-env.blinkdeploys.arc.domains'
+const URL_BASE = 'http://10.0.0.100:50002'
 const URL_API = `${URL_BASE}/api/poll/app`
 // async storage keys
 const ASKEY_TOKEN = 'auth_token'
