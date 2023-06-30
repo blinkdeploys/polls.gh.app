@@ -6,7 +6,7 @@ import CameraScreen from './CameraScreen.jsx'
 import styles from './agentActions.style'
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../../constants'
-import { URL_BASE, URL_API } from '../../../hook/constants'; 
+import { URL_BASE, URL_API } from '../../../constants'; 
 import { getAuthToken, getCSRFToken } from '../../../utils'
 import useCsrfToken from '../../../hook/useCsrfToken'
 import mime from "mime";

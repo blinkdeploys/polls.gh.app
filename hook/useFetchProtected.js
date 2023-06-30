@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
-import { URL_API } from './constants'
+import { URL_API } from '../constants'
 import axios from 'axios'
 import {
     getAuthToken, 
-    // getCSRFToken, getUserProfile, saveAuthToken, saveCSRFToken, saveUserProfile
 } from '../utils'
 import useCsrfToken from './useCsrfToken'
 import AsyncStorage from '@react-native-async-storage/async-storage';

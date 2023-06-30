@@ -4,10 +4,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import useLogin from '../../../hook/useLogin';
 import useLogout from '../../../hook/useLogout';
 import styles from './agentActions.style'
-import { COLORS, SIZES } from '../../../constants'
+import { URL_API, COLORS, SIZES } from '../../../constants'
 import {
-    getAuthToken, getCSRFToken, getUserProfile,
-    saveAuthToken, saveCSRFToken, saveUserProfile,
+    getUserProfile,
     isValid
 } from '../../../utils'
 import { Ionicons } from '@expo/vector-icons';
@@ -41,13 +40,8 @@ const LoginScreen = ({ onLogin, onFailure }) => {
 
     // change screen states
     if (isValid(data)) {
-        await saveUserProfile(data || null)
-        await saveAuthToken(data.token || '')
-        await saveCSRFToken(data.csrfToken || '')
         onLogin()
-    }
-
-    if (!isValid(data)) {
+    } else {
         console.log('Error logging in. Please try again.')
     }
 };
@@ -112,10 +106,10 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                     onChangeText={setPassword}
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}
-                    style={{ width: '15%', paddingHorizontal: 15, paddingVertical: 25, alignContent: 'center', }}
+                    style={{ width: '20%', paddingHorizontal: 15, paddingVertical: 25, alignContent: 'center', }}
                 >
                     <Ionicons
-                        name={passwordVisible ? 'eye-off' : 'eye'}
+                        name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
                         size={24}
                         color="black"
                     />

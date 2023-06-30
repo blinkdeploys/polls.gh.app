@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
 import axios from 'axios'
-import { URL_API } from './constants';
+import { URL_API } from '../constants';
 import { getAuthToken } from '../utils'
 import useCsrfToken from './useCsrfToken'
 

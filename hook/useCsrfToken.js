@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { URL_API } from './constants'; 
+import { URL_API } from '../constants'; 
 
 
 const useCsrfToken = () => {

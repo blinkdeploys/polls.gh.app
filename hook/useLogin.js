@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { saveAuthToken, saveCSRFToken, saveUserProfile } from '../utils'
+import { saveApiUrl, saveAuthToken, saveCSRFToken, saveUserProfile } from '../utils'
 import useCsrfToken from './useCsrfToken'
-import { URL_API } from './constants'
+import { URL_API } from '../constants'
 
 
 const useLogin = () => {
@@ -30,9 +30,10 @@ const useLogin = () => {
             throw new Error(`Login failed (${response.status})`);
         }
         const data = await response.json();
-        saveAuthToken(data?.token)
-        saveCSRFToken(data?.csrfToken)
-        saveUserProfile(data)
+        await saveApiUrl(URL_API)
+        await saveAuthToken(data?.token)
+        await saveCSRFToken(data?.csrfToken)
+        await saveUserProfile(data)
     } catch (error) {
         setError(error.message);
         return null;
