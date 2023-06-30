@@ -23,7 +23,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
   const [data, setData] = useState([]);
-  const [resultSheet, setResultSheet] = useState({})
+  const [resultSheet, setResultSheet] = useState(null)
   const [tmpValue, setTmpValue] = useState(0)
   const [showModalInvalidVotes, setShowModalInvalidVotes] = useState(false)
   const [showModalCandidate, setShowModalCandidate] = useState(false)
@@ -125,7 +125,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
           >{post?.message}</Text>
         </View>}
 
-        {<View style={styles.cardsContainer}>
+        {!isLoading && resultSheet && <View style={styles.cardsContainer}>
           <AgentActionCard 
             task={{
               title: "EC Summary Sheet",
@@ -139,7 +139,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
         </View>}
 
         <View style={styles.cardsContainer}>
-          <AgentActionCard 
+          {!isLoading && <AgentActionCard
             task={{
               title: "Invalid Votes",
               detail: `Enter total invalid votes`,
@@ -152,8 +152,8 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
               setShowModalInvalidVotes(true)
             }}
             icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_invalid_votes || 0}</Text>}
-            />
-          <AgentActionCard 
+            />}
+          {!isLoading && <AgentActionCard 
             task={{
               title: "Total Votes",
               detail: `Cumulative Total Votes`,
@@ -162,7 +162,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
             key={`action-total-votes`}
             theme={{backgroundColor: '#D9F6AF'}}
             icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_votes || 0}</Text>}
-            />
+            />}
         </View>
 
         <Spinner visible={post.isLoading} 
