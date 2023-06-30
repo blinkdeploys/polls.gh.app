@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
 import axios from 'axios'
-import { URL_LOCALHOST } from './constants';
+import { URL_API } from './constants';
 import { getAuthToken } from '../utils'
 import useCsrfToken from './useCsrfToken'
 
@@ -39,7 +39,7 @@ const useFetch = (endpoint, user, query) => {
             } else if (endpoint === 'nav') {
                 response = navigation
                 /*
-                const url = `${URL_LOCALHOST}tasks/`
+                const url = `${URL_API}tasks/`
                 const body = JSON.stringify({
                     station: user?.zone?.pk,
                 })
@@ -51,7 +51,7 @@ const useFetch = (endpoint, user, query) => {
                         'X-CSRFToken': csrfToken,
                         'Authorization': `Token ${token}`,
                         'Content-Type': 'application/json',
-                        'Referer': `${URL_LOCALHOST}`,
+                        'Referer': `${URL_API}/`,
                     },
                     'body': body,
                 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { URL_LOCALHOST } from './constants'; 
+import { URL_API } from './constants'; 
 
 
 const useCsrfToken = () => {
@@ -10,7 +10,7 @@ const useCsrfToken = () => {
     setLoading(true);
     setError(null);
     const endpoint = 'csrf'
-    const url = `${URL_LOCALHOST}${endpoint}/`
+    const url = `${URL_API}/${endpoint}/`
     try {
         const response = await fetch(url, {
                                         'method': 'GET',

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
-import { URL_LOCALHOST } from './constants'
+import { URL_API } from './constants'
 import axios from 'axios'
 import {
     getAuthToken, 
@@ -18,7 +18,7 @@ const useFetchProtected = () => {
     const fetchData = async (endpoint, station) => {
         setIsLoading(true)
         try {
-            const url = `${URL_LOCALHOST}${endpoint}/`
+            const url = `${URL_API}/${endpoint}/`
             const csrfToken = await getCsrfToken()
             const token = await getAuthToken()
             const body = JSON.stringify({ station })
@@ -29,7 +29,7 @@ const useFetchProtected = () => {
                                                 'Content-Type': 'application/json',
                                                 'X-CSRFToken': csrfToken,
                                                 'Authorization': `Token ${token}`,
-                                                'Referer': `${URL_LOCALHOST}`,
+                                                'Referer': `${URL_API}/`,
                                             },
                                             'body': body,
                                         });

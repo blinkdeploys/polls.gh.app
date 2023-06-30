@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { saveAuthToken, saveCSRFToken, saveUserProfile } from '../utils'
 import useCsrfToken from './useCsrfToken'
-import { URL, URL_LOCALHOST } from './constants'
+import { URL_API } from './constants'
 
 
 const useLogin = () => {
@@ -11,7 +11,7 @@ const useLogin = () => {
 
   const login = async (username, password) => {
     const endpoint = 'login'
-    const loginUrl = `${URL_LOCALHOST}${endpoint}/`
+    const loginUrl = `${URL_API}/${endpoint}/`
     const body = JSON.stringify({ username, password })
     const csrfToken = await getCsrfToken()
     setLoading(true);
@@ -21,7 +21,7 @@ const useLogin = () => {
                                         'method': 'POST',
                                         'headers': {
                                             'Content-Type': 'application/json',
-                                            'Referer': `${URL_LOCALHOST}`,
+                                            'Referer': `${URL_API}/`,
                                             'X-CSRFToken': `${csrfToken}`,
                                         },
                                         'body': body,
