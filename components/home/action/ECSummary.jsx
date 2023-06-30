@@ -7,7 +7,7 @@ import styles from './agentActions.style'
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../../constants'
 import { URL_BASE, URL_API } from '../../../constants'; 
-import { getAuthToken, getCSRFToken } from '../../../utils'
+import { getAuthToken, getCSRFToken, getResultSheetData, saveResultSheetData } from '../../../utils'
 import useCsrfToken from '../../../hook/useCsrfToken'
 import mime from "mime";
 import * as ImagePicker from 'expo-image-picker'
@@ -28,32 +28,20 @@ const ECSummary = ({ title, mode, user, goHome }) => {
   const [resultSheet, setResultSheet] = useState({})
   const { getCsrfToken } = useCsrfToken()
 
-  useEffect(() => {
-    init = async () => {
-      let data = {}
-      const sheet = await AsyncStorage.getItem(`${mode}_data`)
-      try {
-        data = await JSON.parse(sheet)
-        setResultSheet(data?.result_sheet)
-      } catch(e) {
-        console.log(e)
-      }
-    }
-    init()
-  }, [])
-
-
   const savedFileKey = `${mode}_result_sheet`
   let modeTitle = mode.replace('_sheet', '')
   modeTitle = modeTitle[0].toUpperCase() + modeTitle.slice(1,)
 
+
   useEffect(() => {
-    const initSavedImage = async () => {
-      const file = await AsyncStorage.getItem(savedFileKey)
-      setSavedImage(file)
+    init = async () => {
+      const asyncSheetData = await getResultSheetData(mode);
+      setResultSheet(asyncSheetData)
+      setSavedImage(asyncSheetData?.result_sheet || null)
     }
-    initSavedImage()
+    init()
   }, [])
+
 
   const handleUnsetFile = async () => {
     setFilePath(false)
@@ -123,15 +111,31 @@ const ECSummary = ({ title, mode, user, goHome }) => {
           'Authorization': `Token ${token}`,
         },
       });
+
       if (response.data.ok) {
         alertStatus = 'Success'
         alertMessage = `${modeTitle} Result Sheet uploaded successfully`
-        const savedFilePath = `${URL_BASE}${response.data.file_path}`
-        await AsyncStorage.setItem(savedFileKey, savedFilePath)
-        setSavedImage(savedFilePath)
-        setUploadStatusMessage(alertMessage)
-        setUploadStatusIcon('checksquareo')
-        if (showCamera) { setShowCamera(false) }
+        const savedFilePath = (response?.data?.file_path) ? `${response?.data?.file_path}` : null
+
+        if (savedFilePath) {
+          const resultSheetData = await getResultSheetData(mode)
+          if (savedFilePath !== data?.result_sheet?.result_sheet) {
+            await saveResultSheetData(mode, JSON.stringify({
+              ...resultSheetData,
+              result_sheet: savedFilePath,
+            }));
+          }
+          setSavedImage(savedFilePath)
+          setUploadStatusMessage(alertMessage)
+          setUploadStatusIcon('checksquareo')
+          if (showCamera) { setShowCamera(false) }
+        } else {
+          alertStatus = 'Error'
+          alertMessage = `Failed to fetch ${modeTitle} Result Sheet file path`
+          setUploadStatusMessage(alertMessage)
+          setUploadStatusIcon('exclamationcircleo')
+        }
+
       } else {
         alertStatus = 'Error'
         alertMessage = `Failed to upload ${modeTitle} Result Sheet`
@@ -216,8 +220,8 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         />}
 
       {/* Saved File Preview */}
-      {!filePath && savedImage && (<Image
-                        source={{ uri: savedImage }}
+      {!filePath && typeof savedImage === 'string' && (<Image
+                        source={{ uri: `${URL_BASE}${savedImage}` }}
                         style={{ width: '100%', minHeight: 250, }}
                         />)}
 
@@ -233,7 +237,7 @@ const ECSummary = ({ title, mode, user, goHome }) => {
           {/*<Text style={{fontSize: 18, marginVertical: 2, }}>File Name:</Text>
           <Text style={{fontSize: 18, marginVertical: 5, fontWeight: 'bold', }}>{filePath}</Text>*/}
           <Text style={{fontSize: 18, marginVertical: 15, }}>Would you like to upload this file?</Text>
-          {selectedImage && (
+          {typeof selectedImage === 'string' && (
             <Image
               source={{ uri: selectedImage }}
               style={{ width: '100%', minHeight: 300, }}
