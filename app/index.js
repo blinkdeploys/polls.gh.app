@@ -129,12 +129,16 @@ const Home = () => {
                     {(mode == 'presidential_sheet_file')
                         ? <ECSummary
                             title="EC Summary Document"
+                            mode="presidential_sheet"
+                            user={userProfile}
                             goHome={() => setMode('presidential_sheet')}
                             />
                         : <></>}
                     {(mode == 'parliamentary_sheet_file')
                         ? <ECSummary
                             title="EC Summary Document"
+                            mode="parliamentary_sheet"
+                            user={userProfile}
                             goHome={() => setMode('parliamentary_sheet')}
                             />
                         : <></>}
