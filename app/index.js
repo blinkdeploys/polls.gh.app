@@ -43,12 +43,11 @@ const Home = () => {
      }, [apiUrl])
 
     useEffect(() => {
-        // fetchAuth()
         if (isValid(authToken)) {
             setIsGuest(false)
         } else {
             setIsGuest(true)
-            ditchAuth()
+            // ditchAuth()
             console.log(`No auth token found. Logging out...`)
         }
     }, [authToken])
