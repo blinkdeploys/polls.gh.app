@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import { checkImageURL } from '../../../../utils'
+import { getResultData, getResultSheetData, checkImageURL } from '../../../../utils'
 import { images } from '../../../../constants'
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './agentActionCard.style'
 
@@ -13,14 +12,11 @@ const AgentActionCard = ({ task, theme, icon, handleNavigate }) => {
 
   useEffect(() => {
     const init = async () =>  {
-      const sheet = await AsyncStorage.getItem(`${task?.path}_data`)
-      try {
-        const data = await JSON.parse(sheet)
-        if (data && data?.result_sheet) {
-          task.done = (data?.result_sheet && data?.result_sheet?.result_sheet) ? true : false
-        }
-      } catch (e) {
-        print(e)
+      // determine if a task can be marked as completed
+      const results = await getResultData(task?.path);
+      const resultSheet = await getResultSheetData(task?.path);
+      if (results && resultSheet) {
+        task.done = (resultSheet && resultSheet?.result_sheet) ? true : false
       }
     }
     init()
