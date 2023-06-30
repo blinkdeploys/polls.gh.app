@@ -3,10 +3,10 @@ import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, 
 import { URL_API } from '../constants'
 import axios from 'axios'
 import {
-    getAuthToken, 
+    getAuthToken, saveResultData,
+    saveResultSheetData,
 } from '../utils'
 import useCsrfToken from './useCsrfToken'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const useFetchProtected = () => {
@@ -35,8 +35,9 @@ const useFetchProtected = () => {
             if (!response.ok) { throw new Error('Data fetch failed') }
             const data = await response.json()
             setIsLoading(false)
-            await AsyncStorage.setItem(`${endpoint}_data`, JSON.stringify(data.data))
-            return data.data.sheet
+            await saveResultData(endpoint, data?.data?.results)
+            await saveResultSheetData(endpoint, data?.data?.result_sheet)
+            return data?.data
         } catch (error) {
             // Handle error
             setIsError(true)
