@@ -17,7 +17,10 @@ const ResultSheetCard = ({ row, handleNavigate, theme }) => {
       onPress={handleNavigate}
     >
       <View
-        style={styles.textContainer}
+        style={{
+          flex: 1,
+          marginHorizontal: 10,
+        }}
       >
         <Text
           style={styles.jobName}

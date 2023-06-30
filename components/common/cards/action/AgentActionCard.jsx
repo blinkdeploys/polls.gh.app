@@ -32,7 +32,10 @@ const AgentActionCard = ({ task, theme, icon, handleNavigate }) => {
       onPress={handleNavigate}
     >
       <TouchableOpacity
-        style={styles.logoContainer}
+        style={[
+          styles.logoContainer,
+          { width: 'auto', minWidth: 50, paddingHorizontal: 10, },
+        ]}
       >
         {(task?.required === true)
         ? ((task?.done === true)
