@@ -9,12 +9,16 @@ import { AntDesign } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../../constants'
 
 
-const ECSummary = ({ title, goHome }) => {
+const CameraScreen = ({
+  title, makeFile,
+  setFile, setFilePath,
+  uploadFile, unsetFile,
+  closeCamera, }) => {
   const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const [isLoading, setIsLoading] = useState(false);
   const [photoUri, setPhotoUri] = useState(null);
-  const [filePath, setFilePath] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -23,6 +27,20 @@ const ECSummary = ({ title, goHome }) => {
     })();
   }, []);
 
+  const takePhoto = async () => {
+    if (cameraRef) {
+      setIsLoading(true)
+      const photo = await cameraRef.takePictureAsync();
+      const file = makeFile(photo)
+      console.log(file)
+      setFile(file)
+      setFilePath(file?.name)
+      setIsLoading(false)
+      setPhotoUri(photo.uri);
+    }
+  };
+
+  /*
   const selectPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -41,15 +59,6 @@ const ECSummary = ({ title, goHome }) => {
     }
   };
 
-  const takePhoto = async () => {
-    if (cameraRef) {
-        setIsLoading(true)
-        const photo = await cameraRef.takePictureAsync();
-        setIsLoading(false)
-        setPhotoUri(photo.uri);
-    }
-  };
-
   const uploadPhoto = async () => {
     if (!photoUri) {
       Alert.alert('No Photo', 'Please take or select a photo first.');
@@ -59,9 +68,9 @@ const ECSummary = ({ title, goHome }) => {
         const formData = new FormData();
         formData.append('photo',
                         {
-                            uri: photoUri,
-                            name: 'photo.jpg',
-                            type: 'image/jpg'
+                          uri: photoUri,
+                          name: 'photo.jpg',
+                          type: 'image/jpg'
                         });
         const response = await fetch('https://example.com/upload',
                                     {
@@ -85,6 +94,7 @@ const ECSummary = ({ title, goHome }) => {
         Alert.alert('Error while picking the file:', error);
     }
   };
+  */
 
   if (hasPermission === null) {
     return <View />;
@@ -100,8 +110,10 @@ const ECSummary = ({ title, goHome }) => {
 
       {!photoUri && (
         <Camera
-            style={{ flex: 1, }}
-            type={cameraType} ref={(ref) => (cameraRef = ref)}>
+          style={{ flex: 1, }}
+          ref={(ref) => setCameraRef(ref)}
+          type={cameraType}
+        >
             <View
             style={{
                 flex: 1,
@@ -135,65 +147,108 @@ const ECSummary = ({ title, goHome }) => {
         </Camera>)}
 
       {!photoUri && (
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginVertical: 20,
+        }}>
             <TouchableOpacity
                 style={{
                     backgroundColor: '#000000',
-                    paddingVertical: 8,
+                    paddingVertical: 15,
                     paddingHorizontal: 10,
-                    margin: 20,
                     borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
                 }}
                 onPress={takePhoto}
             >
                 <Text
-                    style={{ fontSize: 20, color: COLORS.white }}
+                    style={{ fontSize: 20, color: COLORS.white, fontWeight: 'bold' }}
                 >Take Photo</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
-                style={{
-                    backgroundColor: '#000000',
-                    paddingVertical: 8,
-                    paddingHorizontal: 10,
-                    margin: 20,
-                    borderRadius: 10,
-                }}
-                onPress={selectPhoto}
+              onPress={closeCamera}
+              style={{
+                backgroundColor: COLORS.white,
+                paddingHorizontal: 10,
+                paddingVertical: 15,
+                marginHorizontal: 10,
+                marginVertical: 20,
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+              }}
             >
-                <Text
-                    style={{ fontSize: 20, color: COLORS.white }}
-                >Select Photo</Text>
-            </TouchableOpacity>
+            <Text
+              style={{
+                ...styles.headerBtn,
+                color: '#000000',
+                fontWeight: 'bold',
+                flex: 1,
+                fontSize: 20,
+              }}
+            >Cancel</Text>
+          </TouchableOpacity>
+
+
         </View>)}
 
       {photoUri && (
-        <View style={{ alignItems: 'center' }}>
+        <View>
             <Image source={{ uri: photoUri }} style={{ width: 330, height: 350 }} />
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginVertical: 0,
+            }}>
                 <TouchableOpacity
                     style={{
-                        backgroundColor: '#000000',
-                        paddingVertical: 8,
-                        paddingHorizontal: 10,
-                        margin: 20,
-                        borderRadius: 10,
+                      backgroundColor: '#000000',
+                      paddingVertical: 15,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                      margin: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
                     }}
-                    onPress={uploadPhoto}
+                    onPress={uploadFile}
                 >
-                    <Text style={{ fontSize: 20, color: COLORS.white }}>Upload Photo</Text>
+                    <Text style={{
+                      fontSize: 20,
+                      color: COLORS.white,
+                      fontWeight: 'bold'
+                    }}>Upload Photo</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{
-                        backgroundColor: '#000000',
-                        paddingVertical: 8,
-                        paddingHorizontal: 10,
-                        margin: 20,
-                        borderRadius: 10,
+                      backgroundColor: COLORS.white,
+                      paddingVertical: 15,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                      margin: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
                     }}
-                    onPress={() => setPhotoUri(null)}
+                    onPress={() => {
+                      unsetFile()
+                      setPhotoUri(null)
+                    }}
                 >
-                    <Text style={{ fontSize: 20, color: COLORS.white }}>Retake Photo</Text>
+                    <Text style={{
+                      fontSize: 20,
+                      color: '#000000',
+                      fontWeight: 'bold'
+                    }}>Retake Photo</Text>
                 </TouchableOpacity>
+
+
+                
             </View>
         </View>
       )}
@@ -201,4 +256,4 @@ const ECSummary = ({ title, goHome }) => {
   );
 };
 
-export default ECSummary;
+export default CameraScreen;
