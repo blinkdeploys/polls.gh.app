@@ -17,7 +17,7 @@ const AgentActionCard = ({ task, theme, icon, handleNavigate }) => {
       try {
         const data = await JSON.parse(sheet)
         if (data && data?.result_sheet) {
-          task.done = (data?.result_sheet) ? true : false
+          task.done = (data?.result_sheet && data?.result_sheet?.result_sheet) ? true : false
         }
       } catch (e) {
         print(e)
