@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router'
 import { COLORS, SIZES } from '../../../constants'
@@ -18,6 +18,7 @@ import styles from './agentActions.style'
 
 const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const router = useRouter();
+  const scrollViewRef = useRef(null);
   const { fetchData, isLoading, isError } = useFetchProtected()
   const [modalCandidate, setModalCandidate] = useState({});
   const [modalCandidateId, setModalCandidateId] = useState(-1);
@@ -44,18 +45,6 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   }, [])
 
 
-  const showToast = () => {
-    Toast.show({
-      type: 'success', // 'info', 'success', 'error', or 'none'
-      position: 'bottom', // 'top' or 'bottom'
-      text1: 'Hello',
-      text2: 'This is a toast message',
-      visibilityTime: 2000, // Duration for which the toast will be visible (in milliseconds)
-      autoHide: true, // Hide the toast after `visibilityTime` automatically
-    });
-  };
-  
-
   const sumVotes = () => {
     let total = 0
     data.map(m => total += Number(m?.votes || 0))
@@ -65,8 +54,9 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
     })
   }
 
-  const handleSubmit = () => {
-    const result = post.postData(mode, user?.zone?.pk, data, resultSheet)
+  const handleSubmit = async () => {
+    const result = await post.postData(mode, user?.zone?.pk, data, resultSheet)
+    // scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   }
 
   const setCandidate = (candidate={}) => {
@@ -76,7 +66,6 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   const closeOverlay = () => {
     setShowModalCandidate(false);
     setShowModalInvalidVotes(false);
-    showToast()
   }
 
   const openOverlay = (c=null) => {
@@ -85,7 +74,10 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
       return
     }
     setModalCandidateId(c);
-    setModalCandidate(data[c]);
+    setModalCandidate({
+      ...data[c],
+      votes: data[c].votes || 0,
+    });
     setShowModalCandidate(true);
   }
 
@@ -95,7 +87,6 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
       'result_sheet': resultSheet,
       'sheet': data,
     }))
-    showToast()
     sumVotes()
     closeOverlay();
   }
@@ -104,9 +95,12 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
   return (
     <View style={inStyles.container}>
 
-      <AppHeader user={user} goHome={goHome} title={title} />
+      <ScrollView
+        ref={scrollViewRef}
+        style={inStyles.content}
+      >
 
-      <View style={inStyles.content}>
+        <AppHeader user={user} goHome={goHome} title={title} />
 
         {post.message && <View
           style={{
@@ -158,7 +152,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
             theme={{backgroundColor: '#ECD6D3'}}
             key={`action-total-invalid-votes`}
             handleNavigate={() => {
-              setTmpValue(resultSheet?.total_invalid_votes)
+              setTmpValue(resultSheet?.total_invalid_votes || 0)
               setShowModalInvalidVotes(true)
             }}
             icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_invalid_votes || 0}</Text>}
@@ -189,42 +183,71 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
               <ResultSheetCard 
               row={candidate}
               key={`action-${candidate?.pk}-${c}`}
-              handleNavigate={() => openOverlay(c)}
+              handleNavigate={() => {
+                openOverlay(c)
+              }}
               />
             ))
           )}
         </View>
 
-      </View>
-
-      <View
-        style={inStyles.footer}
-      >
-        {!isLoading && <TouchableOpacity
-          onPress={handleSubmit}
+        {post.message && <View
           style={{
-            backgroundColor: '#000000',
-            padding: 15,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignContent: 'center',
+            backgroundColor: (post.isError) ? '#ECD6D3' : '#D9F6AF',
+            paddingHorizontal: 20,
+            paddingVertical: 12,
+            borderRadius: 5,
+            marginTop: 25,
           }}
         >
-          <Text style={{
-            ...styles.headerBtn,
-            color: COLORS.white,
-            borderRadius: SIZES.large,
-            fontWeight: 'bold',
-            fontSize: 20,
-          }}>Save Results</Text>
-        </TouchableOpacity>}
-      </View>
+          <Text
+            style={{
+              fontSize: 17,
+              fontWeight: 'bold',
+              paddingHorizontal: 10,
+              paddingBottom: 3,
+            }}
+          >{(post.isError) ? 'Error' : 'Success'}</Text>
+          <Text
+            style={{
+              fontSize: 15,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              lineHeight: 22,
+            }}
+          >{post?.message}</Text>
+        </View>}
+
+        <View
+          style={inStyles.footer}
+        >
+          {!isLoading && <TouchableOpacity
+            onPress={handleSubmit}
+            style={{
+              backgroundColor: '#000000',
+              padding: 15,
+              borderRadius: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignContent: 'center',
+            }}
+          >
+            <Text style={{
+              ...styles.headerBtn,
+              color: COLORS.white,
+              borderRadius: SIZES.large,
+              fontWeight: 'bold',
+              fontSize: 20,
+            }}>Save Results</Text>
+          </TouchableOpacity>}
+        </View>
+
+      </ScrollView>
 
       {showModalInvalidVotes && <ModalBox
         title={'Invalid Vote Count'}
         detail={'Enter total number Invalid Votes for this station'}
-        value={`${tmpValue || 0}`}
+        value={`${tmpValue}`}
         handleCancel={closeOverlay}
         handleOk={() => {
           if (tmpValue) {
@@ -244,7 +267,7 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
       {showModalCandidate && <ModalBox
         title={'Poll Result'}
         detail={`Enter the ${modalCandidate?.party__code} Candidate's vote count`}
-        value={`${modalCandidate?.votes || 0}`}
+        value={`${modalCandidate?.votes}`}
         handleOk={okOverlay}
         handleCancel={closeOverlay}
         handleChange={(text) => {
@@ -263,6 +286,7 @@ const inStyles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+    position:'relative',
   },
   content: {
     flex: 2,
