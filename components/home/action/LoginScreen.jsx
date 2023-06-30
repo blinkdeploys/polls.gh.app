@@ -106,7 +106,12 @@ const LoginScreen = ({ onLogin, onFailure }) => {
                     onChangeText={setPassword}
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}
-                    style={{ width: '20%', paddingHorizontal: 15, paddingVertical: 25, alignContent: 'center', }}
+                    style={{
+                        width: '20%',
+                        alignContent: 'center',
+                        paddingHorizontal: 15,
+                        paddingVertical: 25,
+                    }}
                 >
                     <Ionicons
                         name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
