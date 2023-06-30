@@ -54,7 +54,7 @@ const usePost = (query) => {
             console.log(data?.message?.detail);
             setMessage(data?.message?.detail)
             setIsError(!data?.message?.ok)
-            Alert.alert('Success', 'Result sheet saved')
+            Alert.alert('Success', data?.message?.detail)
             return data;
         } catch (error) {
             console.log('There was an error saving result data. Network error')
