@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react'
 import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
 import axios from 'axios'
+import { URL_LOCALHOST } from './constants';
+import { getAuthToken } from '../utils'
+import useCsrfToken from './useCsrfToken'
+
 // import { RAPID_API_KEY } from '@env'
 
 // const rapidApiKey = RAPID_API_KEY
 
-const useFetch = (endpoint, query) => {
+const useFetch = (endpoint, user, query) => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
+    const { getCsrfToken } = useCsrfToken()
 
     const options = {
       method: 'GET',
@@ -33,12 +38,36 @@ const useFetch = (endpoint, query) => {
                 response = mockParliamentaryResultSheet
             } else if (endpoint === 'nav') {
                 response = navigation
+                /*
+                const url = `${URL_LOCALHOST}tasks/`
+                const body = JSON.stringify({
+                    station: user?.zone?.pk,
+                })
+                const token = await getAuthToken()
+                const csrfToken = await getCsrfToken()
+                const res = await fetch(`${url}`, {
+                    'method': 'POST',
+                    'headers': {
+                        'X-CSRFToken': csrfToken,
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Referer': `${URL_LOCALHOST}`,
+                    },
+                    'body': body,
+                });
+                const actions = await res.json()
+                response = actions
+                */
             } else if (endpoint === 'job-details') {
                 response = mockJobDetails
             } else {
                 response = mockSearch
             }
-            setData(response.data.data);
+            if (response?.data?.data) {
+                setData(response?.data?.data);
+            } else {
+                setData(response?.data);
+            }
             console.log('Data retreived successfully.');
         } catch (error) {
             console.log('There was an error accessing the endpoint')
