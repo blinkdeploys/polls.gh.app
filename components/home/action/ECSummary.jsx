@@ -200,12 +200,13 @@ const ECSummary = ({ title, mode, user, goHome }) => {
         unsetFile={handleUnsetFile}
         />}
 
+      {/* Saved File Preview */}
       {savedImage && (<Image
                         source={{ uri: savedImage }}
                         style={{ width: '100%', minHeight: 250, }}
                         />)}
 
-      {/* File Preview */}
+      {/* Selected File Preview */}
       {filePath && <View style={{
               marginBottom: 40,
       }}>
