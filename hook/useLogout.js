@@ -1,17 +1,17 @@
 import { useState } from 'react';
+import { URL_API } from '../constants';
 
-const URL = 'https://app.blinkdeploys-env.blinkdeploys.arc.domains/api/poll/app/logout/' // 'https://www.localhost.architect.sh/api/poll/app/login/'
 
-const useLogin = () => {
+const useLogout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const login = async (username, password) => {
+  const logout = async () => {
     setLoading(true);
     setError(null);
 
     try {
-        const response = await fetch(URL, {
+        const response = await fetch(URL_API, {
                                         'method': 'POST',
                                         'headers': {
                                             'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ const useLogin = () => {
     }
   };
 
-  return { loading, error, login };
+  return { loading, error, logout };
 };
 
-export default useLogin;
+export default useLogout;

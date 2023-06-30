@@ -1,7 +1,6 @@
 import { useState } from 'react';
+import { URL_API } from '../constants';
 
-
-const URL = 'https://app.blinkdeploys-env.blinkdeploys.arc.domains/api/poll/app/csrf/' // 'https://www.localhost.architect.sh/api/poll/app/login/'
 
 const useToken = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +11,7 @@ const useToken = () => {
     setError(null);
 
     try {
-        const response = await fetch(URL, {
+        const response = await fetch(URL_API, {
                                         'method': 'GET',
                                         'headers': {
                                             'Content-Type': 'application/json',
