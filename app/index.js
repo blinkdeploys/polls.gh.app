@@ -43,8 +43,7 @@ const Home = () => {
      }, [apiUrl])
 
     useEffect(() => {
-        // refresh the csrf token if the user is still logged in
-        if (typeof authToken !== 'string') { setAuthToken('') }
+        // fetchAuth()
         if (isValid(authToken)) {
             setIsGuest(false)
         } else {
