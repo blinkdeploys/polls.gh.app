@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
-import { COLORS, SIZES, icons, images } from '../constants'
+import { URL_API, COLORS, SIZES, icons, images } from '../constants'
 import {
     ResultSheet, AgentActions, ECSummary, ScreenHeaderBtn, LoginScreen, Welcome
 } from '../components'
 import {
+    getApiUrl,
     getAuthToken, getCSRFToken, getUserProfile,
-    saveAuthToken, saveCSRFToken, saveUserProfile,
     removeAuthToken, removeCSRFToken, removeUserProfile,
+    removeResultData,
     isValid,
 } from '../utils'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -17,30 +18,41 @@ import styles from './index.style'
 const Home = () => {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('')
-    const [token, setToken] = useState('')
+    const [authToken, setAuthToken] = useState('')
     const [csrfToken, setCsrfToken] = useState('')
     const [userProfile, setUserProfile] = useState('')
     const [mode, setMode] = useState('')
     const [isGuest, setIsGuest] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
+    const [apiUrl, setApiUrl] = useState('')
 
     useEffect(() => {
+        const fetchApiUrl = async () => {
+            const url = await getApiUrl()
+            setApiUrl(url)
+        }
+        fetchApiUrl()
         fetchAuth()
     }, [])
 
     useEffect(() => {
-    }, [token])
+        if (URL_API !== apiUrl) {
+            // log out
+            ditchAuth()
+        }
+     }, [apiUrl])
 
     useEffect(() => {
         // refresh the csrf token if the user is still logged in
-        if (typeof csrfToken !== 'string') { setCsrfToken('') }
-        if (isValid(csrfToken)) {
+        if (typeof authToken !== 'string') { setAuthToken('') }
+        if (isValid(authToken)) {
             setIsGuest(false)
         } else {
             setIsGuest(true)
-            console.log(`No token found!`)
+            ditchAuth()
+            console.log(`No auth token found. Logging out...`)
         }
-    }, [csrfToken])
+    }, [authToken])
 
     useEffect(() => {
         if (mode === 'logout') {
@@ -55,7 +67,7 @@ const Home = () => {
         await removeAuthToken()
         await removeCSRFToken()
         setUserProfile(null)
-        setToken('')
+        setAuthToken('')
         setCsrfToken('')
         setMode('')
         setIsLoading(false)
@@ -63,11 +75,11 @@ const Home = () => {
 
     const fetchAuth = async () => {
         const user = await getUserProfile()
-        const token = await getAuthToken()
         const csrf = await getCSRFToken()
+        const token = await getAuthToken()
         setUserProfile(user)
-        setToken(token)
         setCsrfToken(csrf)
+        setAuthToken(token)
         setMode('')
     }
 
@@ -92,11 +104,6 @@ const Home = () => {
                 }}
                 />
 
-            {false && <View>
-                <Text>{token}</Text>
-                <Text>{csrfToken}</Text>
-                <Text>{userProfile?.username} {userProfile?.email}</Text>
-            </View>}
 
             <Spinner visible={isLoading} 
                     textContent={'Ending session...'}
