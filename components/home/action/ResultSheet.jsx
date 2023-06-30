@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router'
 import { COLORS, SIZES } from '../../../constants'
@@ -100,132 +100,107 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
     closeOverlay();
   }
 
-  const task = {
-    title: "EC Summary Sheet",
-    detail: `Upload EC Summary Sheet for ${title}`,
-    path: mode,
-  }
 
   return (
-    <View>
+    <View style={inStyles.container}>
 
       <AppHeader user={user} goHome={goHome} title={title} />
 
-      {post.message &&
-      <View
-        style={{
-          backgroundColor: (post.isError) ? '#ECD6D3' : '#D9F6AF',
-          paddingHorizontal: 20,
-          paddingVertical: 12,
-          borderRadius: 5,
-          marginTop: 25,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 17,
-            fontWeight: 'bold',
-            paddingHorizontal: 10,
-            paddingBottom: 3,
-          }}
-        >{(post.isError) ? 'Error' : 'Success'}</Text>
-        <Text
-          style={{
-            fontSize: 15,
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            lineHeight: 22,
-          }}
-        >{post?.message}</Text>
-      </View>}
+      <View style={inStyles.content}>
 
-      {!isLoading && <View
-        style={{
-          marginVertical: 15,
-        }}
-      >
-        <TouchableOpacity
-          onPress={handleSubmit}
+        {post.message && <View
           style={{
-            backgroundColor: '#000000',
-            padding: 15,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignContent: 'center',
+            backgroundColor: (post.isError) ? '#ECD6D3' : '#D9F6AF',
+            paddingHorizontal: 20,
+            paddingVertical: 12,
+            borderRadius: 5,
+            marginTop: 25,
           }}
         >
-          <Text style={{
-            ...styles.headerBtn,
-            color: COLORS.white,
-            borderRadius: SIZES.large,
-            fontWeight: 'bold',
-          }}>Save Results</Text>
-        </TouchableOpacity>
-      </View>}
+          <Text
+            style={{
+              fontSize: 17,
+              fontWeight: 'bold',
+              paddingHorizontal: 10,
+              paddingBottom: 3,
+            }}
+          >{(post.isError) ? 'Error' : 'Success'}</Text>
+          <Text
+            style={{
+              fontSize: 15,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              lineHeight: 22,
+            }}
+          >{post?.message}</Text>
+        </View>}
 
-      <View style={styles.cardsContainer}>
-        <AgentActionCard 
-          task={task}
-          key={`action-upload-${task?.id}`}
-          handleNavigate={() => selectMode(`${mode}_file`)}
-          icon={<Octicons name="file-zip" size={24} color="black" />}
-          />
-      </View>
-
-      <View style={styles.cardsContainer}>
-        <AgentActionCard 
-          task={{
-            title: "Invalid Votes",
-            detail: `Enter total invalid votes`,
-            path: mode,
-          }}
-          theme={{backgroundColor: '#ECD6D3'}}
-          key={`action-total-invalid-votes`}
-          handleNavigate={() => {
-            setTmpValue(resultSheet?.total_invalid_votes)
-            setShowModalInvalidVotes(true)
-          }}
-          icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_invalid_votes || 0}</Text>}
-          />
-        <AgentActionCard 
-          task={{
-            title: "Total Votes",
-            detail: `Cumulative Total Votes`,
-            path: mode,
-          }}
-          key={`action-total-votes`}
-          theme={{backgroundColor: '#D9F6AF'}}
-          icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_votes || 0}</Text>}
-          />
-      </View>
-
-      <Spinner visible={post.isLoading} 
-                textContent={'Saving...'}
-                textStyle={{ color: '#FFF' }} />
-
-      <View style={styles.cardsContainer}>
-        {isLoading ? (
-          <ActivityIndicator size="large" colors={COLORS.primary} />
-        ) : isError ? (
-          <Text>Something went wrong</Text>
-        ) : (
-          data?.map((candidate, c) => (
-            <ResultSheetCard 
-             row={candidate}
-             key={`action-${candidate?.pk}-${c}`}
-             handleNavigate={() => openOverlay(c)}
+        {<View style={styles.cardsContainer}>
+          <AgentActionCard 
+            task={{
+              title: "EC Summary Sheet",
+              detail: `Upload EC Summary Sheet for ${title}`,
+              path: mode,
+            }}
+            key={`action-upload-ec-summary-sheet`}
+            handleNavigate={() => selectMode(`${mode}_file`)}
+            icon={<Octicons name="file-zip" size={24} color="black" />}
             />
-          ))
-        )}
+        </View>}
+
+        <View style={styles.cardsContainer}>
+          <AgentActionCard 
+            task={{
+              title: "Invalid Votes",
+              detail: `Enter total invalid votes`,
+              path: mode,
+            }}
+            theme={{backgroundColor: '#ECD6D3'}}
+            key={`action-total-invalid-votes`}
+            handleNavigate={() => {
+              setTmpValue(resultSheet?.total_invalid_votes)
+              setShowModalInvalidVotes(true)
+            }}
+            icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_invalid_votes || 0}</Text>}
+            />
+          <AgentActionCard 
+            task={{
+              title: "Total Votes",
+              detail: `Cumulative Total Votes`,
+              path: mode,
+            }}
+            key={`action-total-votes`}
+            theme={{backgroundColor: '#D9F6AF'}}
+            icon={<Text style={{ fontSize: SIZES.medium, fontWeight: 'bold', }}>{resultSheet?.total_votes || 0}</Text>}
+            />
+        </View>
+
+        <Spinner visible={post.isLoading} 
+                  textContent={'Saving...'}
+                  textStyle={{ color: '#FFF' }} />
+
+        <View style={styles.cardsContainer}>
+          {isLoading ? (
+            <ActivityIndicator size="large" colors={COLORS.primary} />
+          ) : isError ? (
+            <Text>Something went wrong</Text>
+          ) : (
+            data?.map((candidate, c) => (
+              <ResultSheetCard 
+              row={candidate}
+              key={`action-${candidate?.pk}-${c}`}
+              handleNavigate={() => openOverlay(c)}
+              />
+            ))
+          )}
+        </View>
+
       </View>
 
-      {!isLoading && <View
-        style={{
-          marginVertical: 15,
-        }}
+      <View
+        style={inStyles.footer}
       >
-        <TouchableOpacity
+        {!isLoading && <TouchableOpacity
           onPress={handleSubmit}
           style={{
             backgroundColor: '#000000',
@@ -241,9 +216,10 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
             color: COLORS.white,
             borderRadius: SIZES.large,
             fontWeight: 'bold',
+            fontSize: 20,
           }}>Save Results</Text>
-        </TouchableOpacity>
-      </View>}     
+        </TouchableOpacity>}
+      </View>
 
       {showModalInvalidVotes && <ModalBox
         title={'Invalid Vote Count'}
@@ -279,11 +255,22 @@ const ResultSheet = ({ user, title, mode, goHome, selectMode }) => {
         }}
       />}
 
-      {/*<Toast ref={(ref) => Toast.setRef(ref)} />*/}
-
     </View>
   )
 }
 
+const inStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  content: {
+    flex: 2,
+  },
+  footer: {
+    flex: 3,
+    marginVertical: 20,
+  }
+})
 
 export default ResultSheet
