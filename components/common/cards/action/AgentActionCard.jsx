@@ -1,14 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { checkImageURL } from '../../../../utils'
 import { images } from '../../../../constants'
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './agentActionCard.style'
 
 
 const AgentActionCard = ({ task, theme, icon, handleNavigate }) => {
+
+  useEffect(() => {
+    const init = async () =>  {
+      const sheet = await AsyncStorage.getItem(`${task?.path}_data`)
+      try {
+        const data = await JSON.parse(sheet)
+        if (data && data?.result_sheet) {
+          task.done = (data?.result_sheet) ? true : false
+        }
+      } catch (e) {
+        print(e)
+      }
+    }
+    init()
+  }, [])
+ 
   return (
     <TouchableOpacity
       style={{ ...styles.container, ...theme }}
