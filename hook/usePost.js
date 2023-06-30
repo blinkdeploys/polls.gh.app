@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Alert } from 'react-native'
 import { navigation, mockPresidentialResultSheet, mockParliamentaryResultSheet, mockSearch, mockJobDetails } from '../mock/jSearch'
 import axios from 'axios'
 import { URL_API } from './constants';
@@ -53,6 +54,7 @@ const usePost = (query) => {
             console.log(data?.message?.detail);
             setMessage(data?.message?.detail)
             setIsError(!data?.message?.ok)
+            Alert.alert('Success', 'Result sheet saved')
             return data;
         } catch (error) {
             console.log('There was an error saving result data. Network error')
