@@ -119,22 +119,39 @@ export const removeCSRFToken = async () => {
 
 export const saveResultData = async (askey, data) => {
     if (askey) {
-        await saveASData(`${askey}_data`, data)
+        await saveASData(`${askey}_results`, data)
     }
 }
 export const getResultData = async (askey) => {
     if (askey) {
-        const data = await getASData(`${askey}_data`, false)
+        const data = await getASData(`${askey}_results`, true)
         return data
     }
     return null
 }
 export const removeResultData = async (askey) => {
     if (askey) {
-        await removeASData(`${askey}_data`)
+        await removeASData(`${askey}_results`)
     }
 }
 
+export const saveResultSheetData = async (askey, data) => {
+    if (askey) {
+        await saveASData(`${askey}_result_sheet`, data)
+    }
+}
+export const getResultSheetData = async (askey) => {
+    if (askey) {
+        const data = await getASData(`${askey}_result_sheet`, true)
+        return data
+    }
+    return null
+}
+export const removeResultSheetData = async (askey) => {
+    if (askey) {
+        await removeASData(`${askey}_result_sheet`)
+    }
+}
 
 
 export const handleHttpError = async = (code, prepend='', append='') => {
