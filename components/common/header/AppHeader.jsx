@@ -16,7 +16,11 @@ const AppHeader = ({ user, goHome, title }) => {
             }}
         >
             {goHome && <Text
-                style={{ ...styles.headerBtn, color: '#000000' }}
+                style={{
+                    ...styles.headerBtn,
+                    color: '#000000',
+                    fontWeight: 'bold',
+                }}
                 onPress={goHome}
             >Back</Text>}
             {!goHome && <AntDesign name="ellipsis1" size={24} color="black" />}
@@ -28,7 +32,7 @@ const AppHeader = ({ user, goHome, title }) => {
             paddingBottom: 20,
         }}
         >
-        <Text style={{...styles.headerTitle, paddingBottom: 10 }}>{title}</Text>
+        <Text style={{...styles.headerTitle, paddingBottom: 10 }}>{title || user?.full_name }</Text>
         <Text style={styles.headerMedium}>{user.zone.station_code} {user.zone.station_title}</Text>
         <Text style={styles.headerMedium}>{user.zone.constituency_title}, {user.zone.region_title} Region</Text>
         </View>
