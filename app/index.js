@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
-import { URL_API, COLORS, SIZES, icons, images } from '../constants'
+import { URL_API, SYNC_TIME, COLORS, SIZES, icons, images } from '../constants'
 import {
     ResultSheet, AgentActions, ECSummary, ScreenHeaderBtn, LoginScreen, Welcome
 } from '../components'
@@ -10,10 +10,16 @@ import {
     getAuthToken, getCSRFToken, getUserProfile,
     removeAuthToken, removeCSRFToken, removeUserProfile,
     removeResultData,
+    saveAsyncNetworkStatus,
+    getAsyncSyncRegister,
     isValid,
 } from '../utils'
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './index.style'
+
+import NetInfo from '@react-native-community/netinfo';
+import useFetchProfile from '../hook/useFetchProfile'
+
 
 const Home = () => {
     const router = useRouter();
@@ -25,20 +31,27 @@ const Home = () => {
     const [isGuest, setIsGuest] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [apiUrl, setApiUrl] = useState('')
+    const [networkStatus, setNetworkStatus] = useState('Offline')
+    const [syncRegister, setSyncRegister] = useState({})
+
+    const useProfile = useFetchProfile()
 
     useEffect(() => {
-        const fetchApiUrl = async () => {
-            const url = await getApiUrl()
-            setApiUrl(url)
+        const init = async () => {
+            fetchApiUrl()
+            fetchAuth()
+            await checkInternetConnectivity()
+            setInterval(async () => {
+                await checkInternetConnectivity()
+            }, SYNC_TIME)
         }
-        fetchApiUrl()
-        fetchAuth()
+        init()
     }, [])
 
     useEffect(() => {
         if (URL_API !== apiUrl) {
             // log out
-            ditchAuth()
+            // ditchAuth()
         }
      }, [apiUrl])
 
@@ -54,10 +67,45 @@ const Home = () => {
 
     useEffect(() => {
         if (mode === 'logout') {
-            ditchAuth()
+            // ditchAuth()
         }
     }, [mode])
 
+
+    const checkInternetConnectivity = async () => {
+        setNetworkStatus('Syncing...')
+        console.log('Syncing...')
+        const netInfoState = await NetInfo.fetch();
+        const isConnected = (netInfoState.isConnected) ? 'Online' : 'Offline'
+        console.log(isConnected)
+        await saveAsyncNetworkStatus(isConnected)
+        setNetworkStatus(isConnected)
+
+        // sync when online
+        if (netInfoState.isConnected) {
+            // refresh the user profile
+            await useProfile.fetchData()
+            const data = await getAsyncSyncRegister()
+            setSyncRegister(data)
+            // refresh the results (presidential)
+            // refresh the results (parliamentary)
+        }
+        return netInfoState.isConnected
+    };
+
+    const checkIC = () => {
+        checkInternetConnectivity().then(isConnected => {
+            if (isConnected) {
+                // Internet connection is available
+                setNetworkStatus('Online')
+                console.log('Internet is connected');
+            } else {
+                // No internet connection
+                setNetworkStatus('Offline')
+                console.log('No internet connection');
+            }
+        });
+    };
 
     const ditchAuth = async () => {
         setIsLoading(true)
@@ -69,6 +117,11 @@ const Home = () => {
         setCsrfToken('')
         setMode('')
         setIsLoading(false)
+    }
+
+    const fetchApiUrl = async () => {
+        const url = await getApiUrl()
+        setApiUrl(url)
     }
 
     const fetchAuth = async () => {
@@ -89,11 +142,16 @@ const Home = () => {
                     headerStyle: styles.headerStyle,
                     headerShadowVisible: false,
                     headerLeft: () => isGuest
-                            ? <></>
-                            : (<ScreenHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={() => setMode('')} />),
+                        ? <></>
+                        : (<ScreenHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={() => setMode('')} />),
                     headerRight: () => isGuest
-                            ? <></>
-                            : (<ScreenHeaderBtn iconUrl={images.profile} dimension="80%" />),
+                        ? <></>
+                        : (<ScreenHeaderBtn
+                                iconUrl={null}
+                                dimension="80%"
+                                title={networkStatus}
+                                handlePress={() => checkInternetConnectivity()}
+                            />),
                     headerTitle: () => (
                         <View>
                             <Text style={styles.logoText}>Polls.GH</Text>
@@ -102,8 +160,7 @@ const Home = () => {
                 }}
                 />
 
-
-            <Spinner visible={isLoading} 
+            <Spinner visible={isLoading}
                     textContent={'Ending session...'}
                     textStyle={{ color: '#FFF' }} />
 
@@ -147,7 +204,11 @@ const Home = () => {
                             goHome={() => setMode('parliamentary_sheet')}
                             />
                         : <></>}
-                    {!isValid(mode) && <AgentActions user={userProfile} selectMode={setMode} />}
+                    {!isValid(mode) && <AgentActions
+                                            user={userProfile}
+                                            selectMode={setMode}
+                                            register={syncRegister}
+                                            />}
             </ScrollView>}
 
         </SafeAreaView>
